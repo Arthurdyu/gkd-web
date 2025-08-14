@@ -6,7 +6,6 @@ import { createVitePlugins } from "./build/plugins";
 import pkg from "./package.json";
 import dayjs from "dayjs";
 import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
-import fs from "fs";
 const { dependencies, devDependencies, name, version } = pkg;
 const __APP_INFO__ = {
   pkg: { dependencies, devDependencies, name, version },
@@ -24,7 +23,8 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
     root,
     resolve: {
       alias: {
-        "@": resolve(__dirname, "./src")
+        "@": resolve(__dirname, "./src"),
+        "vue-i18n": "vue-i18n/dist/vue-i18n.cjs.js"
       }
     },
     define: {
@@ -33,6 +33,8 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
     css: {
       preprocessorOptions: {
         scss: {
+          silenceDeprecations: ["legacy-js-api", "import"],
+          api: "modern-compiler",
           additionalData: `@import "@/styles/var.scss";`
         }
       }
@@ -103,13 +105,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         jpg: {
           quality: 90
         }
-      }),
-      {
-        name: "write-version-file",
-        generateBundle() {
-          fs.writeFileSync("public/version.text", dayjs().format("YYYY-MM-DD HH:mm:ss"));
-        }
-      }
+      })
     ],
 
     esbuild: {

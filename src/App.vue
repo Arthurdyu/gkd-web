@@ -13,9 +13,7 @@ import en from "element-plus/es/locale/lang/en";
 import zhCn from "element-plus/es/locale/lang/zh-cn";
 import { useI18n } from "vue-i18n";
 import { getBrowserLang } from "@/utils";
-
 const globalStore = useGlobalStore();
-
 // init language
 const i18n = useI18n();
 onMounted(() => {

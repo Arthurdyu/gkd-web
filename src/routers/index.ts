@@ -44,10 +44,6 @@ router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore();
 
   NProgress.start();
-
-  const title = import.meta.env.VITE_GLOB_APP_TITLE;
-  document.title = to.meta.title ? `${to.meta.title} - ${title}` : title;
-
   if (from.meta.isKeepAlive && !from.matched?.at(-1)?.children.find(item => to.name === item.name)) {
     keepAliveStore.removeKeepAliveName(from.path as string);
   }

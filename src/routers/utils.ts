@@ -1,5 +1,3 @@
-import { Login } from "@/api/interface/login";
-
 const mode = import.meta.env.VITE_ROUTER_MODE;
 /**
  * @description 使用递归扁平化菜单，方便添加动态路由

@@ -139,35 +139,3 @@
     padding-left: #{$i}px !important;
   }
 }
-.triangle-up {
-  position: relative;
-  color: #fb4949;
-  &::before {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    width: 0;
-    height: 0;
-    content: " ";
-    border-right: 5px solid transparent;
-    border-bottom: 7px solid #fb4949; /* 三角形的颜色 */
-    border-left: 5px solid transparent;
-    transform: translateY(-50%);
-  }
-}
-.triangle-down {
-  position: relative;
-  color: #36d333;
-  &::before {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    width: 0;
-    height: 0;
-    content: " ";
-    border-top: 7px solid #36d333; /* 三角形的颜色 */
-    border-right: 5px solid transparent;
-    border-left: 5px solid transparent;
-    transform: translateY(-50%);
-  }
-}

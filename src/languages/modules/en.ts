@@ -1,4 +1,5 @@
 export default {
+  title: "Visualization of Salmonella database",
   menu: {
     home: "Home",
     resource: "Resource",
@@ -8,5 +9,5 @@ export default {
   },
   home: {
     welcome: "Welcome"
-  },
+  }
 };

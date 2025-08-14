@@ -37,7 +37,7 @@ export const useAuthStore = defineStore({
     // Get AuthMenuList
     async getAuthMenuList() {
       const newRouter = JSON.parse(JSON.stringify(allRouter));
-      console.log(newRouter)
+      console.log(newRouter);
       this.authMenuList = newRouter;
       // 设置首页
       const newPath = getFirstLeafRoute(newRouter);

@@ -1,6 +1,4 @@
-import { DegreeEnum, SubjectEnum, HighEducationEnum, IdentityEnum, ProfessionalTitleEnum } from "@/dict/enums";
-
-declare namespace Homepage {
+export declare namespace Homepage {
   namespace Home {
     type ResHome = {
       /**

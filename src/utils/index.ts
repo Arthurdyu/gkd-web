@@ -131,7 +131,6 @@ export function getBrowserLang() {
   return defaultBrowserLang;
 }
 
-
 // 根据时间转换显示格式
 export function calcTime(time: string) {
   const now = new Date(dayjs().format("YYYY/MM/DD"));

@@ -21,11 +21,11 @@ import { useGlobalStore } from "@/stores/modules/global";
 import { useKeepAliveStore } from "@/stores/modules/keepAlive";
 import Maximize from "./components/Maximize.vue";
 import Footer from "@/layouts/components/Footer/index.vue";
-
+import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 const globalStore = useGlobalStore();
 const { maximize, isCollapse, layout } = storeToRefs(globalStore);
-
+const { t } = useI18n();
 const keepAliveStore = useKeepAliveStore();
 const { keepAliveName } = storeToRefs(keepAliveStore);
 
@@ -86,6 +86,9 @@ watch(
     if (!keepAliveStore.keepAliveName.includes(tabsParams.name) && tabsParams.isKeepAlive) {
       keepAliveStore.addKeepAliveName(tabsParams.path);
     }
+
+    const title = import.meta.env.VITE_GLOB_APP_TITLE;
+    document.title = tabsParams.title ? `${t(tabsParams.title)} - ${t(title)}` : t(title);
   },
   { immediate: true }
 );

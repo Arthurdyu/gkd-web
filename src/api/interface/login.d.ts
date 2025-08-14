@@ -1,5 +1,4 @@
 declare namespace Login {
-
   interface MenuOptions {
     /*** 子节点列表 */
     children?: MenuOptions[];
