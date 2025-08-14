@@ -1,6 +1,6 @@
 <template>
   <el-dropdown trigger="click" @command="changeLanguage">
-    <i :class="'iconfont icon-zhongyingwen'" class="toolBar-icon"></i>
+    <img src="@/assets/images/icon_lang.svg" class="toolBar-icon" />
     <template #dropdown>
       <el-dropdown-menu>
         <el-dropdown-item
@@ -36,3 +36,9 @@ const changeLanguage = (lang: string) => {
   globalStore.setGlobalState("language", lang as LanguageType);
 };
 </script>
+<style lang="scss" scoped>
+.toolBar-icon {
+  width: 20px;
+  cursor: pointer;
+}
+</style>

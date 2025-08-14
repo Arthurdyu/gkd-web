@@ -24,6 +24,7 @@
           </el-menu-item>
         </template>
       </el-menu>
+      <Language></Language>
     </el-header>
     <Main />
   </el-container>
@@ -34,6 +35,7 @@ import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Main from "@/layouts/components/Main/index.vue";
 import SubMenu from "@/layouts/components/Menu/SubMenu.vue";
+import Language from "@/layouts/components/Header/components/Language.vue";
 import { useAuthStore } from "@/stores/modules/auth";
 
 const authStore = useAuthStore();

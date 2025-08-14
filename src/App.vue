@@ -6,6 +6,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive } from "vue";
+import { useTheme } from "@/hooks/useTheme";
 import { ElConfigProvider } from "element-plus";
 import { useGlobalStore } from "@/stores/modules/global";
 import { LanguageType } from "./stores/interface";
@@ -22,6 +23,8 @@ onMounted(() => {
   globalStore.setGlobalState("language", language as LanguageType);
 });
 
+const { initTheme } = useTheme();
+initTheme();
 // element language
 const locale = computed(() => {
   if (globalStore.language == "zh") return zhCn;
