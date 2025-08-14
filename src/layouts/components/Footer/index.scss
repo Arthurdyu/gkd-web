@@ -1,0 +1,23 @@
+.footer-container {
+  background-color: var(--el-bg-color-page);
+  .footer-content {
+    position: relative;
+    width: 1400px;
+    padding: 20px 0;
+    margin: auto;
+    font-size: 12px;
+    font-style: normal;
+    line-height: 22px;
+    color: rgb(18 38 64 / 50%);
+    .footer-img {
+      height: 50px;
+      margin-bottom: 9px;
+    }
+    .footer-copyright {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+}

@@ -1,0 +1,145 @@
+@font-face {
+  font-family: iconfont; /* Project id 4638352 */
+
+  /* Color fonts */
+  src:
+    url("iconfont.woff2?t=1726621449726") format("woff2"),
+    url("iconfont.woff?t=1726621449726") format("woff"),
+    url("iconfont.ttf?t=1726621449726") format("truetype");
+}
+.iconfont {
+  font-family: iconfont !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.icon-idcard::before {
+  content: "\e712";
+}
+.icon-User-full::before {
+  content: "\e700";
+}
+.icon-folder-open1::before {
+  content: "\e709";
+}
+.icon-bank::before {
+  content: "\e70f";
+}
+.icon-Edit::before {
+  content: "\e716";
+}
+.icon-Inbox::before {
+  content: "\e715";
+}
+.icon-Download::before {
+  content: "\e714";
+}
+.icon-FileText::before {
+  content: "\e713";
+}
+.icon-sound::before {
+  content: "\e70a";
+}
+.icon-reconciliation::before {
+  content: "\e70b";
+}
+.icon-project-vertical::before {
+  content: "\e70c";
+}
+.icon-rocket::before {
+  content: "\e70d";
+}
+.icon-folder::before {
+  content: "\e70e";
+}
+.icon-heart::before {
+  content: "\e710";
+}
+.icon-project-across::before {
+  content: "\e711";
+}
+.icon-Aim::before {
+  content: "\e708";
+}
+.icon-Dashboard::before {
+  content: "\e6fe";
+}
+.icon-UsergroupAdd::before {
+  content: "\e6ff";
+}
+.icon-FundView::before {
+  content: "\e701";
+}
+.icon-Profile::before {
+  content: "\e702";
+}
+.icon-Audit::before {
+  content: "\e703";
+}
+.icon-Lock1::before {
+  content: "\e704";
+}
+.icon-folder-open::before {
+  content: "\e705";
+}
+.icon-Laptop::before {
+  content: "\e706";
+}
+.icon-Bank::before {
+  content: "\e707";
+}
+.icon-User::before {
+  content: "\e6f5";
+}
+.icon-Lock::before {
+  content: "\e6f9";
+}
+.icon-Right::before {
+  content: "\e6ef";
+}
+.icon-FilePdf::before {
+  content: "\e6ec";
+}
+.icon-Fullscreen::before {
+  content: "\e6f0";
+}
+.icon-FullscreenExit::before {
+  content: "\e6f1";
+}
+.icon-CloudDownload::before {
+  content: "\e6f2";
+}
+.icon-QuestionCircle::before {
+  content: "\e6f3";
+}
+.icon-Down::before {
+  content: "\e6f4";
+}
+.icon-Plus::before {
+  content: "\e6f6";
+}
+.icon-Close::before {
+  content: "\e6f7";
+}
+.icon-CaretDown::before {
+  content: "\e6f8";
+}
+.icon-Minus::before {
+  content: "\e6fa";
+}
+.icon-backtop::before {
+  content: "\e6fb";
+}
+.icon-Left::before {
+  content: "\e6fc";
+}
+.icon-CaretUp::before {
+  content: "\e6fd";
+}
+.icon-Search::before {
+  content: "\e6ed";
+}
+.icon-Up::before {
+  content: "\e6ee";
+}

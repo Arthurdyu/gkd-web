@@ -1,0 +1,13 @@
+.el-main {
+  box-sizing: border-box;
+  padding: 0;
+  overflow: unset;
+  background-color: var(--el-bg-color-page);
+  > :first-child {
+    min-height: calc(100% - 150px);
+  }
+}
+.el-footer {
+  height: auto;
+  padding: 0;
+}
