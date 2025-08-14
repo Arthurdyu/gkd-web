@@ -2,9 +2,9 @@
   box-sizing: border-box;
   padding: 0;
   overflow: unset;
-  background-color: var(--el-bg-color-page);
+  background-color: white;
   > :first-child {
-    min-height: calc(100% - 150px);
+    min-height: calc(100% - 372px);
   }
 }
 .el-footer {

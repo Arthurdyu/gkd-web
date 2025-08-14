@@ -8,7 +8,9 @@ export default {
     help: "Help"
   },
   home: {
-    welcome: "Welcome",
+    sub_title: "Customized for Researchers, Boosting Research Efficiency",
+    title: "Visualization of Salmonella Database",
+    show_bt: "Show Our Research",
     onehealth_categorization: "The Categorization System of One Health",
     db_intro: "There are 488,223 Salmonella Genomes in Our Database."
   },

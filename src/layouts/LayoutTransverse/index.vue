@@ -23,8 +23,8 @@
             </template>
           </el-menu-item>
         </template>
+        <Language></Language>
       </el-menu>
-      <Language></Language>
     </el-header>
     <Main />
   </el-container>

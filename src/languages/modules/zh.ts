@@ -2,7 +2,9 @@ export default {
   title: "沙门氏菌数据库",
   menu: { home: "首页", resource: "资源", search: "搜索", analysis: "分析", help: "帮助" },
   home: {
-    welcome: "欢迎使用",
+    sub_title: "专为研究人员定制，提升研究效率",
+    title: "沙门氏菌数据库可视化",
+    show_bt: "展示我们的研究成果",
     onehealth_categorization: "One Health 分类体系",
     db_intro: "数据库共包含 488,223 株沙门氏菌基因组。"
   },

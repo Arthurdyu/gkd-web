@@ -39,6 +39,7 @@ const changeLanguage = (lang: string) => {
 <style lang="scss" scoped>
 .toolBar-icon {
   width: 20px;
+  margin-left: 32px;
   cursor: pointer;
 }
 </style>

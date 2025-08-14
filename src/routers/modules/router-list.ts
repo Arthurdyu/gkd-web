@@ -43,5 +43,44 @@ export const allRouter = [
       isAffix: false,
       isKeepAlive: false
     }
+  },
+  {
+    path: "/search",
+    name: "Search",
+    component: "/search/index",
+    meta: {
+      title: "menu.search",
+      isLink: "",
+      isHide: false,
+      isFull: false,
+      isAffix: false,
+      isKeepAlive: false
+    }
+  },
+  {
+    path: "/analysis",
+    name: "Analysis",
+    component: "/analysis/index",
+    meta: {
+      title: "menu.analysis",
+      isLink: "",
+      isHide: false,
+      isFull: false,
+      isAffix: false,
+      isKeepAlive: false
+    }
+  },
+  {
+    path: "/help",
+    name: "Help",
+    component: "/help/index",
+    meta: {
+      title: "menu.help",
+      isLink: "",
+      isHide: false,
+      isFull: false,
+      isAffix: false,
+      isKeepAlive: false
+    }
   }
 ];
