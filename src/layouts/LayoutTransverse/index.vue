@@ -2,10 +2,6 @@
 <template>
   <el-container class="layout">
     <el-header>
-      <div class="logo flx-center">
-        <img class="logo-img" src="@/assets/images/logo.svg" alt="logo" />
-        <span class="logo-text">{{ title }}</span>
-      </div>
       <el-menu mode="horizontal" :router="false" :default-active="activeMenu" popper-class="my-menu-popper">
         <!-- 不能直接使用 SubMenu 组件，无法触发 el-menu 隐藏省略功能 -->
         <template v-for="subItem in menuList" :key="subItem.path">
@@ -41,7 +37,6 @@ import SubMenu from "@/layouts/components/Menu/SubMenu.vue";
 import { useAuthStore } from "@/stores/modules/auth";
 
 const authStore = useAuthStore();
-const title = import.meta.env.VITE_GLOB_APP_TITLE;
 
 const route = useRoute();
 const router = useRouter();
