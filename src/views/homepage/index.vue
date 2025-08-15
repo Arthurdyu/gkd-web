@@ -15,10 +15,11 @@
         </div>
         <div class="part-two-text">
           {{ $t("home.onehealth_categorization") }}
+          <img class="onehealth-img" src="@/assets/images/OneHealth.svg" />
         </div>
       </div>
     </div>
-    <div class="part-three-container">Visualization of almonella database</div>
+    <div class="part-three-container">Visualization of Salmonella database</div>
   </div>
 </template>
 

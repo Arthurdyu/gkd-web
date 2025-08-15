@@ -56,6 +56,14 @@
         font-size: 24px;
         font-weight: 400;
       }
+      .onehealth-img {
+        position: relative;
+        top: 10px;
+        right: 0;
+        bottom: 0;
+        z-index: 1;
+        height: 800px;
+      }
     }
   }
 }
