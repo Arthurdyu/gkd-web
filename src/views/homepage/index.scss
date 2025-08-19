@@ -56,13 +56,28 @@
         font-size: 24px;
         font-weight: 400;
       }
+      .chart-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .sunburst-img {
+        display: block;
+        flex: 1;
+        width: 200px;
+        height: 200px;
+        padding-right: 20px;
+      }
       .onehealth-img {
         position: relative;
-        top: 10px;
-        right: 0;
         bottom: 0;
         z-index: 1;
+        display: block;
+        flex: 1;
         height: 800px;
+
+        // top: 10px;
+        margin-right: 200px;
       }
     }
   }
