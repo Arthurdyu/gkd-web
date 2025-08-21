@@ -16,7 +16,7 @@
   width: 100%;
   height: 500px; // 基础高度，可根据需求调整
   overflow: hidden;
-  background-color: #4a90e2; // 蓝色代替地图
+  background-color: #f8f8f8; // 蓝色代替地图
   border-radius: 8px;
   box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
 }
@@ -126,18 +126,18 @@
 }
 
 // 分别设置不同颜色区分
-.resource-chart-sequence-year {
-  background-color: #5cb85c; // 绿色：每年分离量柱状图
-}
-.resource-chart-sankey {
-  background-color: #f0ad4e; // 橙色：桑基图
-}
-.resource-chart-serovar {
-  background-color: #d9534f; // 红色：血清型饼图
-}
-.resource-chart-st {
-  background-color: #7b68ee; // 紫色：ST型饼图
-}
+// .resource-chart-sequence-year {
+//   background-color: #5cb85c; // 绿色：每年分离量柱状图
+// }
+// .resource-chart-sankey {
+//   background-color: #f0ad4e; // 橙色：桑基图
+// }
+// .resource-chart-serovar {
+//   background-color: #d9534f; // 红色：血清型饼图
+// }
+// .resource-chart-st {
+//   background-color: #7b68ee; // 紫色：ST型饼图
+// }
 
 // 表格容器样式
 .resource-table-container {

@@ -6,7 +6,8 @@ export default {
     title: "沙门菌溯源数据库",
     show_bt: "展示我们的研究成果",
     onehealth_categorization: "One Health 分类体系",
-    db_intro: "数据库共包含 488,223 株沙门氏菌基因组。"
+    db_intro: "数据库共包含 488,223 株沙门氏菌基因组。",
+    onehealth_sunburst: "旭日图"
   },
   resource: {
     serovar: "血清型",

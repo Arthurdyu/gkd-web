@@ -12,7 +12,9 @@ export default {
     title: "Visualization of Salmonella Database",
     show_bt: "Show Our Research",
     onehealth_categorization: "The Categorization System of One Health",
-    db_intro: "There are 488,223 Salmonella Genomes in Our Database."
+    db_intro: "There are 488,223 Salmonella Genomes in Our Database.",
+
+    onehealth_sunburst: "One Health sunburst"
   },
   resource: {
     serovar: "Serovar",

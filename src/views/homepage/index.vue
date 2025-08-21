@@ -17,7 +17,9 @@
           {{ $t("home.onehealth_categorization") }}
         </div>
         <div class="chart-container">
-          <div class="sunburst-img">旭日图</div>
+          <div class="sunburst-img">
+            <OneHealthSunburstChart />
+          </div>
           <img class="onehealth-img" src="@/assets/images/OneHealth.svg" />
         </div>
       </div>
@@ -26,7 +28,11 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import OneHealthSunburstChart from "@/components/ECharts/oneHealthSunburst.vue";
+
+//import { ref } from "vue";
+</script>
 
 <style scoped lang="scss">
 @import "./index";
