@@ -9,6 +9,7 @@ import {
   GaugeChart,
   FunnelChart,
   BoxplotChart,
+  SunburstChart,
   TreemapChart
 } from "echarts/charts";
 import {
@@ -97,7 +98,8 @@ echarts.use([
   BoxplotChart,
   TreemapChart,
   UniversalTransition,
-  CanvasRenderer
+  CanvasRenderer,
+  SunburstChart
 ]);
 
 export default echarts;

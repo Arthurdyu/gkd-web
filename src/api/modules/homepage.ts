@@ -11,3 +11,7 @@ export function infoListApi() {
 export function mapJson(code: any) {
   return http.get(`${SYS}/auth/full/${code}`);
 }
+//获取sunburst数据
+export function getSunburstApi(params: Homepage.ReqSunburst) {
+  return http.get<Homepage.ResSunburst>(`${SYS}/home/sunburst/getSunburst`, params);
+}

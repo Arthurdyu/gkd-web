@@ -1,8 +1,5 @@
 <template>
   <div class="map-echarts">
-    <el-icon v-show="selectAreaCode" class="map-back" @click="onBack()">
-      <ArrowLeft />
-    </el-icon>
     <div id="echarts" ref="chartRef" :style="{ height: 'calc(100% - 16px )', width: '100%' }" />
     <div class="text"></div>
   </div>
@@ -10,15 +7,11 @@
 
 <script setup lang="ts" name="MapECharts">
 import { ref, onMounted, onBeforeUnmount, watch, markRaw, reactive } from "vue";
-import { EChartsType, ECElementEvent } from "echarts/core";
+import { EChartsType } from "echarts/core";
 import echarts, { ECOption } from "./config";
 import { useDebounceFn } from "@vueuse/core";
 import { DEFAULT_PRIMARY } from "@/config";
-// import { useGlobalStore } from "@/stores/modules/global";
-// import { storeToRefs } from "pinia";
-import { codeTurnInfo, nameToCode, MapInitialOptions, mapOption } from "./helper";
-import { ElMessage } from "element-plus";
-import { mapJson } from "@/api/modules/homepage";
+import { mapOption } from "./helper";
 import worldJson from "@/assets/json/geo/world.json"; // 新增：引入世界地图数据
 
 const loadingOption = {
@@ -29,60 +22,33 @@ const loadingOption = {
   zlevel: 1 // 图层级别
 };
 interface ChartMapProps {
-  selectAreaCode: number;
   mapData: Array<{ name: string; value: number }> | [];
 }
 const props = withDefaults(defineProps<ChartMapProps>(), {
-  selectAreaCode: 0,
   mapData: () => []
 });
 
-const emit = defineEmits<{
-  "update:selectAreaCode": [value: number];
-}>();
 const chartRef = ref<HTMLDivElement | HTMLCanvasElement>();
 const chartInstance = ref<EChartsType>();
-
-const selectAreaItem = ref<MapInitialOptions>();
-//已注册地图
-const hasRegestList = reactive<Array<number>>([]);
 const optionMap = reactive<ECOption>(mapOption as ECOption);
 
 watch(
   () => props.mapData,
   () => {
     //获取地图信息 中心点 文件名
-    selectAreaItem.value = codeTurnInfo(props.selectAreaCode);
     draw();
   },
   { deep: true }
 );
 function draw() {
-  if (chartInstance.value && selectAreaItem.value) {
+  if (chartInstance.value) {
     // 判断是否已经注册
-    if (!hasRegestList.includes(props.selectAreaCode)) {
-      hasRegestList.push(props.selectAreaCode);
-      // 注册地图
-      mapJson(
-        [310000, 110000, 120000, 500000].includes(props.selectAreaCode) ? props.selectAreaCode : props.selectAreaCode + "_full"
-      )
-        .then(jsonData => {
-          // 注册地图数据
-          echarts.registerMap(selectAreaItem.value!.map, jsonData.data as any);
-        })
-        .then(() => {
-          // 设置地图选项
-          setMapOptions();
-        });
-    } else {
-      // 设置地图选项
-      setMapOptions();
-    }
+    // 设置地图选项
+    setMapOptions();
   }
 }
 const setMapOptions = () => {
-  const { center, zoom } = selectAreaItem.value!;
-  optionMap.series![0] = { ...optionMap.series![0], map: "world", center, zoom }; // map 改为 world
+  optionMap.series![0] = { ...optionMap.series![0], zoom: 1.63 }; // map 改为 world
   optionMap.series![0].data = props.mapData ?? [];
   const sortMapData = props.mapData!.sort((a, b) => b.value - a.value) ?? [];
   optionMap.visualMap!["max"] = sortMapData.at(0)?.value ?? 200;
@@ -96,16 +62,6 @@ const setMapOptions = () => {
   };
   chartInstance.value!.setOption(optionMap, { notMerge: true });
 };
-const onBack = () => {
-  emit("update:selectAreaCode", 0);
-};
-const handleClick = (event: ECElementEvent) => {
-  if (["台湾省", "香港特别行政区", "澳门特别行政区"].includes(event.name)) {
-    ElMessage.error("暂无对应数据");
-  } else if (event.name && nameToCode[event.name]) {
-    emit("update:selectAreaCode", nameToCode[event.name]);
-  }
-};
 const init = () => {
   if (!chartRef.value) return;
   chartInstance.value = echarts.getInstanceByDom(chartRef.value);
@@ -115,8 +71,6 @@ const init = () => {
         renderer: "canvas"
       })
     );
-    chartInstance.value.off("click");
-    chartInstance.value.on("click", handleClick);
     draw();
   }
 };
@@ -128,27 +82,7 @@ const resize = () => {
 };
 
 const debouncedResize = useDebounceFn(resize, 300, { maxWait: 800 });
-
-// const globalStore = useGlobalStore();
-// const { maximize, isCollapse, tabs, footer } = storeToRefs(globalStore);
-
-// watch(
-//   () => [maximize, isCollapse, tabs, footer],
-//   () => {
-//     debouncedResize();
-//   },
-//   { deep: true }
-// );
-
 onMounted(() => {
-  // 注册世界地图
-  selectAreaItem.value = {
-    name: "世界地图",
-    map: "world",
-    center: [0, 0], // 世界地图中心点
-    zoom: 1
-  };
-  hasRegestList.push(0);
   echarts.registerMap("world", worldJson as any); // 注册世界地图
   init();
   window.addEventListener("resize", debouncedResize);
