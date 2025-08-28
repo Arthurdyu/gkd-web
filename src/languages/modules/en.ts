@@ -23,6 +23,7 @@ export default {
     country: "Country",
     isolation_source: "Isolation source",
     host: "Host",
-    oneHealth: "One Health(Niche)"
+    oneHealth: "One Health(Niche)",
+    sequenceYearperYear: "Number of Sequences"
   }
 };

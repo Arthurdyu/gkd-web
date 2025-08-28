@@ -54,8 +54,8 @@ const setMapOptions = () => {
   optionMap.visualMap!["max"] = sortMapData.at(0)?.value ?? 200;
   optionMap.visualMap!["min"] = sortMapData.length > 1 ? sortMapData.at(-1)?.value : 0;
   optionMap.series![0].itemStyle = {
-    areaColor: "#e6f7ff", // 默认区域颜色
-    borderColor: "#409EFF", // 边界线颜色
+    areaColor: "#e8e8e8", // 默认区域颜色
+    borderColor: "gray", // 边界线颜色
     emphasis: {
       areaColor: "#ffd700" // 鼠标悬停时颜色
     }

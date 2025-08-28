@@ -29,7 +29,7 @@ export const mapOption = {
     text: ["最多", "最少"],
     realtime: false,
     calculable: true,
-    color: ["#bf1600ff", "#ec7878ff"] //地图映射颜色范围
+    color: ["#bf1600ff", "#ec7878ff"] //世界地图映射颜色范围
   },
   series: [
     {

@@ -8,12 +8,16 @@ export function getWorldmapApi() {
   return http.get<Resource.ResWorldmap>(`${SYS}/resource/getWorldMapValue`);
 }
 
+//每年测序的基因组
+export function getSequenceYearApi() {
+  return http.get<Resource.ResSequenceYear>(`${SYS}/resource/getSequencesNumberPerYear`);
+}
+
+//血清型的数量
+export function getSerovarApi() {
+  return http.get<Resource.ResSerovar>(`${SYS}/resource/getSerovarPiechart`);
+}
 // 获取 Meta 表格数据列表
 export function getMetaListApi(params?: Resource.ReqMetaList) {
   return http.get<Resource.ResMetaList>(`${SYS}/search/getMetaTable`, params);
-}
-
-// 获取 每年的基因组序列
-export function getSequenceYearApi(params?: Resource.ReqSequenceYear) {
-  return http.get<Resource.ResSequenceYear>(`${SYS}/resource/getSequencesNumberPerYear`, params);
 }

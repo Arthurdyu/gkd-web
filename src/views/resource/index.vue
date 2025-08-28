@@ -10,10 +10,12 @@
     <!--地图下方的四个小图-->
     <div class="resource-chart-container">
       <div class="resource-chart-sequence-year">
-        <SequenceYearChart :data="sequenceYearData" />
+        <!-- <SequenceYearChart :data="sequenceYearData" /> -->
+        <ECharts :option="sequenceYearOption" width="90%" height="100%" color="#ff00ff"></ECharts>
       </div>
       <div class="resource-chart-serovar">
-        <SerovarPieChart :data="serovarPieData" />
+        <!-- <SerovarPieChart :data="serovarPieData" /> -->
+        <ECharts :option="serovarPieOption" width="90%" height="100%" color="#ff00ff"></ECharts>
       </div>
       <div class="resource-chart-st">
         <STPieChart :data="stPieData" />
@@ -62,16 +64,20 @@
 
 <script setup lang="ts">
 import MapECharts from "@/components/MapECharts/worldMap.vue";
-import SequenceYearChart from "@/components/ECharts/sequenceYear.vue";
-import SerovarPieChart from "@/components/ECharts/serovarPie.vue";
+import ECharts from "@/components/ECharts/index.vue";
+//import SerovarPieChart from "@/components/ECharts/serovarPie.vue";
 import STPieChart from "@/components/ECharts/stPie.vue";
 import SerovarSTSankeyChart from "@/components/ECharts/serovarSTSankey.vue";
 
-//import MetaTable from "@/components/metaTable.vue";
-import { getMetaListApi, getWorldmapApi } from "@/api/modules/resourcepage";
+import { getMetaListApi, getWorldmapApi, getSequenceYearApi, getSerovarApi } from "@/api/modules/resourcepage";
 import { ref, onMounted, reactive } from "vue";
+import { useI18n } from "vue-i18n";
 
 const mapData = ref<Array<{ name: string; value: number }>>([]);
+//const sequenceYearOption = ref<Array<{ year: number; value: number }>>([]);
+const sequenceYearOption = ref<any>({});
+const serovarPieOption = ref<any>({});
+const { t } = useI18n();
 const getWorldmapData = async () => {
   try {
     const { data } = await getWorldmapApi();
@@ -84,25 +90,160 @@ const getWorldmapData = async () => {
     console.error("获取世界地图数据失败:", error);
   }
 };
-
 // const mapData = ref([
 //   { country: "China", value: 1000 },
 //   { country: "United States", value: 80000 }
 //   // 可根据实际情况替换或扩展数据
 // ]);
-// 示例柱状图数据
-const sequenceYearData = ref([
-  { year: 2020, value: 120 },
-  { year: 2021, value: 180 },
-  { year: 2022, value: 150 }
-]);
 
+//每年测序的基因组数量
+const getSequenceYearData = async () => {
+  try {
+    const { data } = await getSequenceYearApi();
+    const years: number[] = [];
+    const values: number[] = [];
+
+    data.list.forEach(item => {
+      years.push(item.year);
+      values.push(item.number);
+      //values.push(Math.log10(item.number)); //绘制对数坐标轴
+    });
+    sequenceYearOption.value = {
+      tooltip: {
+        // 鼠标放上去的数据提示框
+        trigger: "axis",
+        axisPointer: {
+          type: "shadow"
+        }
+      },
+      xAxis: {
+        type: "category",
+        data: years,
+        minInterval: 10
+      },
+      yAxis: {
+        type: "value",
+        name: t("resource.sequenceYearperYear"),
+        nameLocation: "middle",
+        nameGap: 50,
+        nameRotate: 90,
+        axisLabel: {
+          //margin: 10,
+          overflow: "break",
+          formatter: (value: number) => {
+            if (value === 0 || !isFinite(value)) {
+              return "0";
+            }
+            return value.toString();
+          }
+        },
+        logBase: 10
+      },
+      series: [
+        {
+          data: values,
+          type: "bar"
+        }
+      ],
+      grid: {
+        left: "10%",
+        right: "5%",
+        top: "20%",
+        bottom: "5%",
+        containLabel: true
+      }
+    };
+  } catch (error) {
+    console.error("获取序列年份数据失败:", error);
+  }
+};
+
+const getSerovarData = async () => {
+  try {
+    const { data } = await getSerovarApi();
+    const serovars: string[] = [];
+    const values: number[] = [];
+
+    data.list.forEach(item => {
+      serovars.push(item.serovar);
+      values.push(item.number);
+      //values.push(Math.log10(item.number)); //绘制对数坐标轴
+    });
+    // 构造饼图数据
+    const pieData = serovars.map((serovar, index) => {
+      // 定义颜色数组
+      const colors = [
+        "#5470c6",
+        "#91cc75",
+        "#fac858",
+        "#ee6666",
+        "#73c0de",
+        "#3ba272",
+        "#9a60b4",
+        "#ea7ccc",
+        "#fc8452",
+
+        "#fac8ee",
+
+        "#e5e5e5"
+      ];
+      return {
+        name: serovar,
+        value: values[index],
+        itemStyle: {
+          color: colors[index % colors.length]
+        }
+      };
+    });
+    serovarPieOption.value = {
+      title: {
+        //text: t("resource.serovar"),
+        text: "Serovar Pie Chart",
+        left: "center"
+      },
+      tooltip: {
+        trigger: "item"
+      },
+      legend: {
+        orient: "vertical",
+        left: "bottom"
+      },
+      series: [
+        {
+          name: "Serovar Pie Chart",
+          type: "pie",
+          radius: "50%",
+          data: pieData,
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: "rgba(0, 0, 0, 0.5)"
+            }
+          }
+        }
+      ]
+    };
+  } catch (error) {
+    console.error("获取serovar数据失败:", error);
+  }
+};
+// 示例柱状图数据
+// const sequenceYearData = ref([
+//   { year: 2020, value: 120 },
+//   { year: 2021, value: 180 },
+//   { year: 2022, value: 150 }
+// ]);
+
+// const getSerovarPieData = async () => {
+
+// };
 // 示例饼图数据
-const serovarPieData = ref([
-  { name: "Typhimurim", value: 300 },
-  { name: "Enteritidis", value: 200 },
-  { name: "Newport", value: 150 }
-]);
+// const serovarPieData = ref([
+//   { name: "Typhimurim", value: 300 },
+//   { name: "Enteritidis", value: 200 },
+//   { name: "Newport", value: 150 }
+// ]);
 // 示例ST饼图数据
 const stPieData = ref([
   { name: "ST19", value: 300 },
@@ -120,25 +261,6 @@ const serovarSTSankeyData = ref({
 
 // 保存Meta信息列表
 const metaTableData = ref<any[]>([]);
-// const getMetaList = async () => {
-//   try {
-//     const params = {
-//       currPage: 1,
-//       pageSize: 10,
-//       list: [],
-//       totalCount: 0,
-//       totalPage: 0
-//     };
-//     const res = await getMetaListApi(params);
-//     metaTableData.value = res.data.data.list;
-//     console.log("Meta数据列表:", res);
-//   } catch (error) {
-//     console.error("获取Meta数据失败:", error);
-//   }
-// };
-
-// 组件挂载时获取数据
-// 保存Meta信息列表
 
 // 分页相关数据
 const pagination = reactive({
@@ -300,6 +422,8 @@ const handleCurrentChange = (val: number) => {
 onMounted(() => {
   getWorldmapData();
   getMetaList();
+  getSequenceYearData();
+  getSerovarData();
 });
 </script>
 

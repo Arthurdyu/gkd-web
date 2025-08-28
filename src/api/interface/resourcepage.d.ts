@@ -11,6 +11,25 @@ export declare namespace Resource {
     country: string;
     number: number;
   }
+  //每年测序的基因组
+  interface SequenceYearItem {
+    year: number;
+    number: number;
+  }
+  interface ResSequenceYear {
+    total: number;
+    list: ResYearlyGenomeItem[];
+  }
+
+  //血清型的数量、饼图
+  interface ResSerovar {
+    total: number;
+    list: ResSerovarItem[];
+  }
+  interface ResSerovarItem {
+    serovar: string;
+    number: number;
+  }
 
   // Meta 表格数据请求参数
   interface ReqMetaList {

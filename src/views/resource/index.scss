@@ -117,7 +117,7 @@
   justify-content: center;
   min-width: 250px; // 最小宽度，防止过窄
   height: 300px; // 固定高度
-  padding: 10px;
+  padding: 1px;
   overflow: hidden;
   font-weight: bold;
   color: white;
@@ -146,7 +146,7 @@
   height: 100%;
   padding: 20px; // 内边距20px
   margin: 20px auto; // 上下外边距20px，左右自动居中
-  background-color: #80bdff;
+  // background-color: #80bdff;
   border-radius: 8px;
   .filter-bar {
     margin-bottom: -1px; // 消除与表格边框的间距
@@ -216,9 +216,13 @@
   .resource-chart-sankey,
   .resource-chart-serovar,
   .resource-chart-st {
-    width: 100%;
-    min-width: auto;
-    height: 200px;
+    // width: 100%;
+    // min-width: auto;
+    // height: 200px;
+
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
   }
   .resource-table-container {
     padding: 0 10px 10px;

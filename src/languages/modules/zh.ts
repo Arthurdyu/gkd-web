@@ -16,6 +16,7 @@ export default {
     country: "国家",
     isolation_source: "分离来源",
     host: "宿主",
-    oneHealth: "One Health(生境)"
+    oneHealth: "One Health(生境)",
+    sequenceYearperYear: "测序量"
   }
 };
