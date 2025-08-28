@@ -12,6 +12,7 @@
 // 地图区域样式
 .resource-map {
   position: relative;
+  display: flex;
   flex-shrink: 0; // 防止被压缩
   width: 100%;
   height: 500px; // 基础高度，可根据需求调整
@@ -19,6 +20,49 @@
   background-color: #f8f8f8; // 蓝色代替地图
   border-radius: 8px;
   box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
+  .mapEcharts {
+    display: flex;
+    flex: 2;
+  }
+  .map-container {
+    position: relative;
+    display: flex;
+    flex: 3;
+    .top-countries {
+      width: 500px;
+      margin-top: 20px;
+      margin-right: 50px;
+      .country-item {
+        position: relative;
+        display: flex;
+        align-items: center;
+        min-width: 100px;
+        height: 20px;
+        margin-bottom: 10px;
+        .country-name {
+          flex-shrink: 0;
+          padding-right: 10px;
+          margin-left: auto; // 将国家名称推向左侧
+          // font-weight: bold;
+          text-align: right;
+          white-space: nowrap;
+        }
+        .bar {
+          flex-shrink: 1; // 允许进度条收缩
+          min-width: 20px;
+          height: 100%;
+          background-color: #ce0e1f;
+          border-radius: 15px;
+        }
+        .country-value {
+          flex-shrink: 0;
+          padding-left: 10px;
+
+          // font-weight: bold;
+        }
+      }
+    }
+  }
 }
 
 // 筛选栏通用样式
@@ -124,20 +168,6 @@
   border-radius: 8px;
   box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
 }
-
-// 分别设置不同颜色区分
-// .resource-chart-sequence-year {
-//   background-color: #5cb85c; // 绿色：每年分离量柱状图
-// }
-// .resource-chart-sankey {
-//   background-color: #f0ad4e; // 橙色：桑基图
-// }
-// .resource-chart-serovar {
-//   background-color: #d9534f; // 红色：血清型饼图
-// }
-// .resource-chart-st {
-//   background-color: #7b68ee; // 紫色：ST型饼图
-// }
 
 // 表格容器样式
 .resource-table-container {

@@ -2,9 +2,31 @@
   <div class="resource-container">
     <div class="resource-map">
       <!-- 地图,显示基因组序列的地理分布。需要有筛选栏，根据 serovar，ST，country,Collection Year 等字段筛选序列-->
-      <div class="map-filter"></div>
-      <!-- <MapECharts :option="worldMapOption" width="800px" height="400px" /> -->
-      <MapECharts :map-data="mapData" />
+
+      <div class="map-container">
+        <div class="map-filter">
+          <div class="filter-bar">
+            <!-- <div class="filter-item">
+              <label>序列来源:</label>
+              <el-select v-model="selectAreaItem.map" placeholder="请选择" @change="handleMapChange">
+                <el-option label="世界地图" value="world"></el-option>
+                <el-option label="中国地图" value="china"></el-option>
+              </el-select>
+            </div> -->
+            <el-select-v2 v-model="value" :options="options" placeholder="Please select " style="width: 240px" />
+          </div>
+        </div>
+        <!-- <MapECharts :option="worldMapOption" width="800px" height="400px" /> -->
+        <MapECharts class="mapEcharts" :map-data="mapData" />
+        <div class="top-countries">
+          <div v-for="(country, index) in topCountries" :key="index" class="country-item">
+            <span class="country-name">{{ country.name }}</span>
+            <!-- <div class="bar" :style="{ width: calculateWidth(country.value) + 'px' }"></div> -->
+            <div class="bar" :style="{ width: getBarWidth(country.value) }"></div>
+            <span class="country-value">{{ country.value }}</span>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!--地图下方的四个小图-->
@@ -78,11 +100,37 @@ const mapData = ref<Array<{ name: string; value: number }>>([]);
 const sequenceYearOption = ref<any>({});
 const serovarPieOption = ref<any>({});
 const { t } = useI18n();
+
+const topCountries = ref<Array<{ name: string; value: number }>>([]);
+
+// 定义计算bar宽度的函数
+const getBarWidth = (value: number): string => {
+  const logValue = Math.log10(value);
+  const maxWidth = 300;
+  const minWidth = 20;
+  const width = (logValue / 5.5) * (maxWidth - minWidth) + minWidth;
+  return `${width}px`;
+};
+// const calculateWidth = (value: number) => {
+//   if (topCountries.value.length === 0) return 100;
+//   const maxValue = Math.max(...topCountries.value.map(item => item.value));
+//   // 最小宽度60px，最大宽度200px
+//   return 60 + (value / maxValue) * 140;
+// };
+//世界地图数据
+
 const getWorldmapData = async () => {
   try {
     const { data } = await getWorldmapApi();
     // 转换数据格式以适配前端组件
     mapData.value = data.list.map(item => ({
+      name: item.country,
+      value: item.number
+    }));
+
+    // 获取前10个国家用于右侧显示
+    const sortedData = [...data.list].sort((a, b) => b.number - a.number);
+    topCountries.value = sortedData.slice(0, 10).map(item => ({
       name: item.country,
       value: item.number
     }));
@@ -96,7 +144,7 @@ const getWorldmapData = async () => {
 //   // 可根据实际情况替换或扩展数据
 // ]);
 
-//每年测序的基因组数量
+//每年测序的基因组数据
 const getSequenceYearData = async () => {
   try {
     const { data } = await getSequenceYearApi();
@@ -109,6 +157,10 @@ const getSequenceYearData = async () => {
       //values.push(Math.log10(item.number)); //绘制对数坐标轴
     });
     sequenceYearOption.value = {
+      title: {
+        text: t("resource.sequenceYearperYear_title"),
+        left: "center"
+      },
       tooltip: {
         // 鼠标放上去的数据提示框
         trigger: "axis",
@@ -158,6 +210,7 @@ const getSequenceYearData = async () => {
   }
 };
 
+//血清型数据
 const getSerovarData = async () => {
   try {
     const { data } = await getSerovarApi();
@@ -176,15 +229,13 @@ const getSerovarData = async () => {
         "#5470c6",
         "#91cc75",
         "#fac858",
+        "#fc8452",
         "#ee6666",
         "#73c0de",
         "#3ba272",
         "#9a60b4",
         "#ea7ccc",
-        "#fc8452",
-
         "#fac8ee",
-
         "#e5e5e5"
       ];
       return {
@@ -269,6 +320,7 @@ const pagination = reactive({
   total: 0
 });
 
+// 获取Meta列表
 const getMetaList = async () => {
   try {
     // 使用更简单的参数格式

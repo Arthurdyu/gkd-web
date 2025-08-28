@@ -6,6 +6,7 @@ import { Resource } from "../interface/resourcepage";
 //世界地图数据
 export function getWorldmapApi() {
   return http.get<Resource.ResWorldmap>(`${SYS}/resource/getWorldMapValue`);
+  //resource/getWorldMapValue 是apifox中世界地图的接口的路径
 }
 
 //每年测序的基因组
@@ -13,9 +14,14 @@ export function getSequenceYearApi() {
   return http.get<Resource.ResSequenceYear>(`${SYS}/resource/getSequencesNumberPerYear`);
 }
 
-//血清型的数量
+//血清型的数据
 export function getSerovarApi() {
   return http.get<Resource.ResSerovar>(`${SYS}/resource/getSerovarPiechart`);
+}
+
+//ST型数据
+export function getSTApi() {
+  return http.get<Resource.ResST>(`${SYS}/resource/getSTPiechart`);
 }
 // 获取 Meta 表格数据列表
 export function getMetaListApi(params?: Resource.ReqMetaList) {

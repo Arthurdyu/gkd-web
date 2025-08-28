@@ -22,14 +22,25 @@ export const mapOption = {
       return val.data.name + ": " + val.data.value;
     }
   },
-  // 视觉映射组件
+  // 视觉映射组件,地图的图例颜色映射
   visualMap: {
     bottom: 0,
-    right: 0,
-    text: ["最多", "最少"],
+    right: 100,
+    text: ["最多", "100,000", "10,000", "1000", "100", "最少"],
     realtime: false,
     calculable: true,
-    color: ["#bf1600ff", "#ec7878ff"] //世界地图映射颜色范围
+    //color: ["#bf1600ff", "#ec7878ff"], //世界地图映射颜色范围
+    // 可以使用 splitNumber 或者 pieces 来控制分段
+    //splitNumber: 6, // 显示6个分段
+    // 或者使用 pieces 自定义每个分段
+    pieces: [
+      { min: 100000, color: "#890101ff" },
+      { min: 10000, color: "#bf1600ff" },
+      { min: 1000, max: 9999, color: "#d73027" },
+      { min: 100, max: 999, color: "#ec7878ff" },
+      { min: 1, max: 99, color: "#f4a582" },
+      { value: 0, color: "#f0e9e9" }
+    ]
   },
   series: [
     {

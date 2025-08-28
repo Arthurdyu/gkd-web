@@ -17,6 +17,9 @@ export default {
     isolation_source: "分离来源",
     host: "宿主",
     oneHealth: "One Health(生境)",
-    sequenceYearperYear: "测序量"
+    sequenceYearperYear_title: "沙门菌测序量",
+    serovarPie_title: "血清型 (Top 10)",
+    stPieChart_title: "ST型 (Top 10)",
+    serovarStSankey_title: "血清型-ST型对应关系"
   }
 };

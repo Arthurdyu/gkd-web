@@ -31,6 +31,16 @@ export declare namespace Resource {
     number: number;
   }
 
+  //ST型数量、饼图
+  interface ResST {
+    total: number;
+    list: ResSTItem[];
+  }
+  interface ResSTItem {
+    st: string;
+    number: number;
+  }
+
   // Meta 表格数据请求参数
   interface ReqMetaList {
     curPage: number;

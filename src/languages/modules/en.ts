@@ -24,6 +24,9 @@ export default {
     isolation_source: "Isolation source",
     host: "Host",
     oneHealth: "One Health(Niche)",
-    sequenceYearperYear: "Number of Sequences"
+    sequenceYearperYear_title: "Number of Sequences",
+    serovarPie_title: "Serovar Pie Chart (Top 10)",
+    stPieChart_title: "ST Pie Chart (Top 10)",
+    serovarStSankey_title: "Serovar-ST Relationship"
   }
 };
