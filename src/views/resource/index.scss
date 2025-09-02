@@ -23,6 +23,7 @@
   .mapEcharts {
     display: flex;
     flex: 2;
+    margin: auto;
   }
   .map-container {
     position: relative;
@@ -30,7 +31,7 @@
     flex: 3;
     .top-countries {
       width: 500px;
-      margin-top: 20px;
+      margin-top: 50px;
       margin-right: 50px;
       .country-item {
         position: relative;

@@ -41,6 +41,18 @@ export declare namespace Resource {
     number: number;
   }
 
+  // sankey 数据
+  interface ResSankey {
+    //total: number;
+    list: ResSankeyItem[];
+  }
+
+  interface ResSankeyItem {
+    serovar: string; // 来源节点
+    st: string; // 目标节点
+    number: number; // 流量值
+  }
+
   // Meta 表格数据请求参数
   interface ReqMetaList {
     curPage: number;
@@ -79,21 +91,21 @@ export declare namespace Resource {
   // Meta 表格Item数据
   interface ResMetaItem {
     strain?: string;
-    // subspecies?: null | string;
-    // serovar?: null | string;
-    // st?: null | string;
-    // isolationSource?: null | string;
-    // host?: null | string;
-    // collectionYear?: null | string;
-    // country?: null | string;
-    // oneHealth?: null | string;
-    // onehealth2?: null | string;
-    // oneHealth3?: null | string;
-    // argNumber?: null | string;
-    // vfNumber?: null | string;
-    // invasive?: null | string;
-    // argList?: null | string;
-    // vfList?: null | string;
+    subspecies?: null | string;
+    serovar?: null | string;
+    st?: null | string;
+    isolationSource?: null | string;
+    host?: null | string;
+    collectionYear?: null | string;
+    country?: null | string;
+    oneHealth?: null | string;
+    onehealth2?: null | string;
+    oneHealth3?: null | string;
+    argNumber?: null | string;
+    vfNumber?: null | string;
+    invasive?: null | string;
+    argList?: null | string;
+    vfList?: null | string;
   }
 
   // request 请求参数类型

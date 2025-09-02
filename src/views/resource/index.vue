@@ -1,21 +1,97 @@
 <template>
   <div class="resource-container">
-    <div class="resource-map">
-      <!-- 地图,显示基因组序列的地理分布。需要有筛选栏，根据 serovar，ST，country,Collection Year 等字段筛选序列-->
-
-      <div class="map-container">
-        <div class="map-filter">
-          <div class="filter-bar">
-            <!-- <div class="filter-item">
-              <label>序列来源:</label>
-              <el-select v-model="selectAreaItem.map" placeholder="请选择" @change="handleMapChange">
-                <el-option label="世界地图" value="world"></el-option>
-                <el-option label="中国地图" value="china"></el-option>
-              </el-select>
-            </div> -->
-            <el-select-v2 v-model="value" :options="options" placeholder="Please select " style="width: 240px" />
-          </div>
+    <div class="map-filter">
+      <div class="filter-bar">
+        <!-- 血清型筛选 -->
+        <div class="filter-item">
+          <label>血清型:</label>
+          <el-select
+            v-model="mapFilters.serovar"
+            multiple
+            clearable
+            collapse-tags
+            placeholder="请选择血清型"
+            popper-class="custom-header"
+            :max-collapse-tags="1"
+            @change="handleMapFilterChange"
+            style="width: 200px"
+          >
+            <template #header>
+              <el-checkbox v-model="checkAll" :indeterminate="indeterminate" @change="handleCheckAll"> All </el-checkbox>
+            </template>
+            <el-option v-for="item in serovarOptions" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
         </div>
+
+        <!-- 宿主筛选 -->
+        <div class="filter-item">
+          <label>宿主:</label>
+          <el-select
+            v-model="mapFilters.host"
+            multiple
+            clearable
+            collapse-tags
+            placeholder="请选择宿主"
+            popper-class="custom-header"
+            :max-collapse-tags="1"
+            @change="handleMapFilterChange"
+            style="width: 200px"
+          >
+            <template #header>
+              <el-checkbox v-model="hostCheckAll" :indeterminate="hostIndeterminate" @change="handleHostCheckAll">
+                All
+              </el-checkbox>
+            </template>
+            <el-option v-for="item in hostOptions" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
+        </div>
+        <!-- 生境筛选 -->
+        <div class="filter-item">
+          <label>生境:</label>
+          <el-select
+            v-model="mapFilters.onehealth"
+            multiple
+            clearable
+            collapse-tags
+            placeholder="请选择生境"
+            popper-class="custom-header"
+            :max-collapse-tags="1"
+            @change="handleMapFilterChange"
+            style="width: 200px"
+          >
+            <template #header>
+              <el-checkbox v-model="oneHealthCheckAll" :indeterminate="oneHealthIndeterminate" @change="handleOneHealthCheckAll">
+                All
+              </el-checkbox>
+            </template>
+            <el-option v-for="item in oneHealthOptions" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
+        </div>
+
+        <!-- 年份区间筛选 -->
+        <div class="filter-item">
+          <label>年份区间:</label>
+          <el-date-picker
+            v-model="mapFilters.yearRange"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始年份"
+            end-placeholder="结束年份"
+            format="YYYY"
+            value-format="YYYY"
+            @change="handleMapFilterChange"
+            style="width: 240px"
+          />
+        </div>
+
+        <!-- 重置按钮 -->
+        <div class="filter-item">
+          <el-button @click="resetMapFilters">重置筛选</el-button>
+        </div>
+      </div>
+    </div>
+    <div class="resource-map">
+      <div class="map-container">
         <!-- <MapECharts :option="worldMapOption" width="800px" height="400px" /> -->
         <MapECharts class="mapEcharts" :map-data="mapData" />
         <div class="top-countries">
@@ -32,40 +108,131 @@
     <!--地图下方的四个小图-->
     <div class="resource-chart-container">
       <div class="resource-chart-sequence-year">
-        <!-- <SequenceYearChart :data="sequenceYearData" /> -->
         <ECharts :option="sequenceYearOption" width="90%" height="100%" color="#ff00ff"></ECharts>
       </div>
       <div class="resource-chart-serovar">
-        <!-- <SerovarPieChart :data="serovarPieData" /> -->
         <ECharts :option="serovarPieOption" width="90%" height="100%" color="#ff00ff"></ECharts>
       </div>
       <div class="resource-chart-st">
-        <STPieChart :data="stPieData" />
+        <ECharts :option="stPieOption" width="90%" height="100%" color="#ff00ff"></ECharts>
       </div>
       <div class="resource-chart-sankey">
-        <SerovarSTSankeyChart :data="serovarSTSankeyData" />
+        <ECharts :option="sankeyOption" width="90%" height="100%" color="#ff00ff"></ECharts>
       </div>
     </div>
 
+    <!-- 表格,显示基因组的详细信息-->
     <div class="resource-table-container">
+      <!-- 搜索 表头-->
       <el-card>
-        <div width="800px" height="400px" color="#ff0000">
-          <el-table :data="metaTableData" border stripe>
+        <div width="800px" height="600px" color="#ff0000">
+          <el-table
+            :data="filterTableData"
+            :default-sort="{ prop: 'strain', order: 'ascending' }"
+            style="width: 100%; height: 600px; overflow: auto; white-space: nowrap"
+          >
             <el-table-column type="index" label="序号" />
-            <el-table-column prop="strain" label="菌株" />
-            <!-- <el-table-column prop="subspecies" label="亚种" /> -->
-            <el-table-column prop="serovar" label="血清型" />
-            <el-table-column prop="st" label="ST型" />
-            <el-table-column prop="isolationSource" label="分离来源" />
-            <el-table-column prop="host" label="宿主" />
-            <el-table-column prop="collectionYear" label="采集年份" />
-            <el-table-column prop="country" label="国家" />
-            <el-table-column prop="oneHealth" label="OneHealth" />
-            <el-table-column prop="onehealth2" label="OneHealth2" />
-            <el-table-column prop="oneHealth3" label="OneHealth3" />
-            <el-table-column prop="argNumber" label="耐药基因数" />
-            <el-table-column prop="vfNumber" label="毒力基因数" />
-            <el-table-column prop="invasive" label="侵袭指数" />
+
+            <el-table-column prop="strain" label="菌株" sortable>
+              <template #header>
+                <div style="display: flex; flex-direction: column; align-items: center; width: 100%; white-space: nowrap">
+                  <!-- 第一行：span + 排序图标 -->
+                  <span>菌株</span>
+                  <el-input v-model="searchStrain" size="default" placeholder="搜索菌株" style="width: auto" />
+                </div>
+              </template>
+            </el-table-column>
+
+            <!-- <el-table-column prop="subspecies" label="亚种" sortable>
+              <template #header>
+                <div style="display: flex; flex-direction: column">
+                  <span>亚种</span>
+                  <el-input v-model="searchSubspecies" size="default" placeholder="" />
+                </div>
+              </template>
+            </el-table-column> -->
+            <el-table-column prop="serovar" label="血清型" sortable>
+              <template #header>
+                <div style="display: flex; flex-direction: column; align-items: center">
+                  <span>血清型</span>
+                  <el-input v-model="searchSerovar" size="default" placeholder="搜索血清型" />
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="st" label="ST型" sortable>
+              <template #header>
+                <div style="display: flex; flex-direction: column; align-items: center">
+                  <span>ST型</span>
+                  <el-input v-model="searchST" size="default" placeholder="" />
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="isolationSource" label="分离来源" sortable>
+              <template #header>
+                <div style="display: flex; flex-direction: column; align-items: center">
+                  <span>分离来源</span>
+                  <el-input v-model="searchIsolationSource" size="default" placeholder="" />
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="host" label="宿主" sortable>
+              <template #header>
+                <div style="display: flex; flex-direction: column; align-items: center">
+                  <span>宿主</span>
+                  <el-input v-model="searchHost" size="default" placeholder="" />
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="collectionYear" label="采集年份" sortable>
+              <template #header>
+                <div style="display: flex; flex-direction: column; align-items: center">
+                  <span>采集年份</span>
+                  <el-input v-model="searchCollectionYear" size="default" placeholder="" />
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="country" label="国家" sortable>
+              <template #header>
+                <div style="display: flex; flex-direction: column; align-items: center">
+                  <span>国家</span>
+                  <el-input v-model="searchCountry" size="default" placeholder="" />
+                </div>
+              </template>
+            </el-table-column>
+
+            <el-table-column prop="oneHealth" label="OneHealth" sortable>
+              <template #header>
+                <span>OneHealth</span>
+                <el-input v-model="searchOneHealth" size="default" placeholder="" />
+              </template>
+            </el-table-column>
+            <el-table-column prop="onehealth2" label="OneHealth2" sortable>
+              <template #header>
+                <span>OneHealth2</span>
+                <el-input v-model="searchOneHealth2" size="default" placeholder="" />
+              </template>
+            </el-table-column>
+            <el-table-column prop="oneHealth3" label="OneHealth3" sortable>
+              <template #header>
+                <span>OneHealth3</span>
+                <el-input v-model="searchOneHealth3" size="default" placeholder="" />
+              </template>
+            </el-table-column>
+            <el-table-column prop="argNumber" label="耐药基因数" sortable>
+              <!-- <template #header>
+                <el-input v-model="searchArgNumber" size="default" placeholder="搜索耐药基因数" />
+              </template> -->
+            </el-table-column>
+            <el-table-column prop="vfNumber" label="毒力基因数" sortable>
+              <!-- <template #header>
+                <el-input v-model="searchVfNumber" size="default" placeholder="搜索毒力基因数" />
+              </template> -->
+            </el-table-column>
+            <el-table-column prop="invasive" label="侵袭指数" sortable>
+              <!-- <template #header>
+                <el-input v-model="searchInvasive" size="default" placeholder="搜索侵袭指数" />
+              </template> -->
+            </el-table-column>
           </el-table>
         </div>
 
@@ -88,29 +255,67 @@
 import MapECharts from "@/components/MapECharts/worldMap.vue";
 import ECharts from "@/components/ECharts/index.vue";
 //import SerovarPieChart from "@/components/ECharts/serovarPie.vue";
-import STPieChart from "@/components/ECharts/stPie.vue";
-import SerovarSTSankeyChart from "@/components/ECharts/serovarSTSankey.vue";
+//import STPieChart from "@/components/ECharts/stPie.vue";
+//import SerovarSTSankeyChart from "@/components/ECharts/serovarSTSankey.vue";
 
-import { getMetaListApi, getWorldmapApi, getSequenceYearApi, getSerovarApi } from "@/api/modules/resourcepage";
-import { ref, onMounted, reactive } from "vue";
+import {
+  getMetaListApi,
+  getWorldmapApi,
+  getSequenceYearApi,
+  getSerovarApi,
+  getSTApi,
+  getSankeyApi
+} from "@/api/modules/resourcepage";
+import { ref, onMounted, reactive, watch, computed } from "vue";
 import { useI18n } from "vue-i18n";
+import { Resource } from "@/api/interface/resourcepage";
 
 const mapData = ref<Array<{ name: string; value: number }>>([]);
-//const sequenceYearOption = ref<Array<{ year: number; value: number }>>([]);
+
+// 地图筛选条件
+const mapFilters = reactive({
+  serovar: [] as string[],
+  host: [] as string[],
+  onehealth: [] as string[],
+  yearRange: []
+});
+
+// 表格筛选条件（保持原有分页筛选）
+const tableFilters = reactive({
+  serovar: "",
+  host: "",
+  yearRange: []
+});
+
+// 筛选选项
+const serovarOptions = ref<Array<{ label: string; value: string }>>([]);
+const hostOptions = ref<Array<{ label: string; value: string }>>([]);
+const oneHealthOptions = ref<Array<{ label: string; value: string }>>([]);
 const sequenceYearOption = ref<any>({});
 const serovarPieOption = ref<any>({});
+const stPieOption = ref<any>({});
+const sankeyOption = ref<any>({});
 const { t } = useI18n();
-
 const topCountries = ref<Array<{ name: string; value: number }>>([]);
+const metaTableData = ref<any[]>([]);
 
-// 定义计算bar宽度的函数
+// 添加全选功能相关变量
+const checkAll = ref(false);
+const indeterminate = ref(false);
+const hostCheckAll = ref(false);
+const oneHealthCheckAll = ref(false);
+const hostIndeterminate = ref(false);
+const oneHealthIndeterminate = ref(false);
+
+// 定义计算bar宽度的函数,log10)
 const getBarWidth = (value: number): string => {
-  const logValue = Math.log10(value);
+  const logValue = Math.log10(value + 1); // 避免log(0)
   const maxWidth = 300;
-  const minWidth = 20;
+  const minWidth = 10;
   const width = (logValue / 5.5) * (maxWidth - minWidth) + minWidth;
   return `${width}px`;
 };
+//
 // const calculateWidth = (value: number) => {
 //   if (topCountries.value.length === 0) return 100;
 //   const maxValue = Math.max(...topCountries.value.map(item => item.value));
@@ -138,11 +343,182 @@ const getWorldmapData = async () => {
     console.error("获取世界地图数据失败:", error);
   }
 };
-// const mapData = ref([
-//   { country: "China", value: 1000 },
-//   { country: "United States", value: 80000 }
-//   // 可根据实际情况替换或扩展数据
-// ]);
+
+// 处理地图筛选条件变化
+const handleMapFilterChange = () => {
+  // 只重新加载地图数据
+  getWorldmapData();
+};
+
+// 处理全选
+const handleCheckAll = (val: any) => {
+  indeterminate.value = false;
+  if (val) {
+    mapFilters.serovar = serovarOptions.value.map(_ => _.value);
+  } else {
+    mapFilters.serovar = [];
+  }
+};
+
+// 处理宿主全选
+const handleHostCheckAll = (val: any) => {
+  hostIndeterminate.value = false;
+  if (val) {
+    mapFilters.host = hostOptions.value.map(_ => _.value);
+  } else {
+    mapFilters.host = [];
+  }
+};
+
+//处理OneHealth全选
+const handleOneHealthCheckAll = (val: any) => {
+  oneHealthIndeterminate.value = false;
+  if (val) {
+    mapFilters.onehealth = oneHealthOptions.value.map(_ => _.value);
+  } else {
+    mapFilters.onehealth = [];
+  }
+};
+
+// 重置地图筛选条件
+const resetMapFilters = () => {
+  mapFilters.serovar = [];
+  mapFilters.host = [];
+  mapFilters.onehealth = [];
+  mapFilters.yearRange = [];
+  checkAll.value = false;
+  indeterminate.value = false;
+  hostCheckAll.value = false;
+  oneHealthCheckAll.value = false;
+  hostIndeterminate.value = false;
+  oneHealthIndeterminate.value = false;
+  getWorldmapData();
+};
+
+// MetaList 获取宿主选项
+const getHostOptions = async () => {
+  try {
+    // 构造参数获取所有数据
+    const params: any = {
+      curPage: 1,
+      limit: 10000 // 获取足够多的数据用于选项展示
+    };
+
+    const res: any = await getMetaListApi(params);
+
+    // 处理宿主统计数据
+    if (res && res.data && res.data.list) {
+      // 获取所有宿主值
+      const hosts = new Set<string>();
+
+      res.data.list.forEach((item: any) => {
+        const host = item.host;
+        if (host) {
+          hosts.add(host);
+        }
+      });
+
+      // 更新宿主选项
+      hostOptions.value = Array.from(hosts).map(host => ({
+        label: host,
+        value: host
+      }));
+    }
+  } catch (error) {
+    console.error("获取宿主选项失败:", error);
+    // 使用模拟数据作为备选
+    hostOptions.value = [
+      { label: "人类", value: "Human" },
+      { label: "猪", value: "Pig" },
+      { label: "牛", value: "Cattle" },
+      { label: "鸡", value: "Chicken" },
+      { label: "环境", value: "Environment" },
+      { label: "鸭", value: "Duck" },
+      { label: "羊", value: "Sheep" }
+    ];
+  }
+};
+
+// 获取血清型选项
+const getSerovarOptions = async () => {
+  try {
+    // 构造参数获取所有数据
+    const params: any = {
+      curPage: 1,
+      limit: 10000 // 获取足够多的数据用于选项展示
+    };
+
+    const res: any = await getMetaListApi(params);
+
+    // 处理血清型统计数据
+    if (res && res.data && res.data.list) {
+      // 获取所有血清型值
+      const serovars = new Set<string>();
+
+      res.data.list.forEach((item: any) => {
+        const serovar = item.serovar;
+        if (serovar) {
+          serovars.add(serovar);
+        }
+      });
+
+      // 更新血清型选项
+      serovarOptions.value = Array.from(serovars).map(serovar => ({
+        label: serovar,
+        value: serovar
+      }));
+    }
+  } catch (error) {
+    console.error("获取血清型选项失败:", error);
+    // 使用模拟数据作为备选
+    serovarOptions.value = [
+      { label: "Typhimurium", value: "Typhimurium" },
+      { label: "Enteritidis", value: "Enteritidis" },
+      { label: "Newport", value: "Newport" },
+      { label: "Javiana", value: "Javiana" }
+    ];
+  }
+};
+
+// 获取OneHealth选项
+const getOneHealthOptions = async () => {
+  try {
+    // 构造参数获取所有数据
+    const params: any = {
+      curPage: 1,
+      limit: 10000 // 获取足够多的数据用于选项展示
+    };
+
+    const res: any = await getMetaListApi(params);
+
+    // 处理OneHealth统计数据
+    if (res && res.data && res.data.list) {
+      // 获取所有OneHealth值
+      const oneHealths = new Set<string>();
+
+      res.data.list.forEach((item: any) => {
+        const oneHealth = item.oneHealth;
+        if (oneHealth) {
+          oneHealths.add(oneHealth);
+        }
+      });
+
+      // 更新OneHealth选项
+      oneHealthOptions.value = Array.from(oneHealths).map(oneHealth => ({
+        label: oneHealth,
+        value: oneHealth
+      }));
+    }
+  } catch (error) {
+    console.error("获取OneHealth选项失败:", error);
+    // 使用模拟数据作为备选
+    oneHealthOptions.value = [
+      { label: "Human", value: "Human" },
+      { label: "Animal", value: "Animal" },
+      { label: "Environment", value: "Environment" }
+    ];
+  }
+};
 
 //每年测序的基因组数据
 const getSequenceYearData = async () => {
@@ -206,12 +582,12 @@ const getSequenceYearData = async () => {
       }
     };
   } catch (error) {
-    console.error("获取序列年份数据失败:", error);
+    console.error("获取每年测序量数据失败:", error);
   }
 };
 
 //血清型数据
-const getSerovarData = async () => {
+const getSerovarPieData = async () => {
   try {
     const { data } = await getSerovarApi();
     const serovars: string[] = [];
@@ -261,7 +637,7 @@ const getSerovarData = async () => {
       },
       series: [
         {
-          name: "Serovar Pie Chart",
+          //name: "Serovar Pie Chart",
           type: "pie",
           radius: "50%",
           data: pieData,
@@ -279,44 +655,240 @@ const getSerovarData = async () => {
     console.error("获取serovar数据失败:", error);
   }
 };
-// 示例柱状图数据
-// const sequenceYearData = ref([
-//   { year: 2020, value: 120 },
-//   { year: 2021, value: 180 },
-//   { year: 2022, value: 150 }
-// ]);
+//ST饼图数据
+const getSTPieData = async () => {
+  try {
+    const { data } = await getSTApi();
+    const sts: string[] = [];
+    const values: number[] = [];
 
-// const getSerovarPieData = async () => {
+    data.list.forEach(item => {
+      sts.push(item.st);
+      values.push(item.number);
+      //values.push(Math.log10(item.number)); //绘制对数坐标轴
+    });
+    // 构造饼图数据
+    const pieData = sts.map((st, index) => {
+      // 定义颜色数组
+      const colors = [
+        "#5470c6",
+        "#91cc75",
+        "#fac858",
+        "#fc8452",
+        "#ee6666",
+        "#73c0de",
+        "#3ba272",
+        "#9a60b4",
+        "#ea7ccc",
+        "#fac8ee",
+        "#e5e5e5"
+      ];
+      return {
+        name: st,
+        value: values[index],
+        itemStyle: {
+          color: colors[index % colors.length]
+        }
+      };
+    });
+    stPieOption.value = {
+      title: {
+        text: t("resource.st"),
+        //text: "Serovar Pie Chart",
+        left: "center"
+      },
+      tooltip: {
+        trigger: "item"
+      },
+      legend: {
+        orient: "vertical",
+        left: "bottom"
+      },
+      series: [
+        {
+          type: "pie",
+          radius: "50%",
+          data: pieData,
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: "rgba(0, 0, 0, 0.5)"
+            }
+          }
+        }
+      ]
+    };
+  } catch (error) {
+    console.error("获取ST数据失败:", error);
+  }
+};
 
-// };
-// 示例饼图数据
-// const serovarPieData = ref([
-//   { name: "Typhimurim", value: 300 },
-//   { name: "Enteritidis", value: 200 },
-//   { name: "Newport", value: 150 }
-// ]);
 // 示例ST饼图数据
-const stPieData = ref([
-  { name: "ST19", value: 300 },
-  { name: "ST32", value: 200 },
-  { name: "ST11", value: 200 }
-]);
+// const stPieData = ref([
+//   { name: "ST19", value: 300 },
+//   { name: "ST32", value: 200 },
+//   { name: "ST11", value: 200 }
+// ]);
 
-const serovarSTSankeyData = ref({
-  nodes: [{ name: "Typhimurim" }, { name: "Enteritidis" }, { name: "ST19" }, { name: "ST32" }],
-  links: [
-    { source: "Typhimurim", target: "ST19", value: 120 },
-    { source: "Enteritidis", target: "ST32", value: 80 }
-  ]
+const formatSankeyData = (
+  rawData: Resource.ResSankey
+): { nodes: { name: string }[]; links: { source: string; target: string; value: number }[] } => {
+  const nodesSet = new Set<string>();
+  const links: { source: string; target: string; value: number }[] = [];
+
+  rawData.list.forEach(({ serovar, st, number }) => {
+    // 添加节点到集合中
+    nodesSet.add(serovar).add(st);
+
+    // 创建链接
+    links.push({
+      source: serovar,
+      target: st,
+      value: number
+    });
+  });
+
+  // 将集合转换为数组，并为每个节点生成{name: nodeName}对象
+  const nodes = Array.from(nodesSet).map(name => ({ name }));
+  return { nodes, links };
+};
+
+const getSankeyData = async () => {
+  try {
+    // 调用API获取数据
+    const response = await getSankeyApi();
+    const rawData = response.data;
+    const formattedData = formatSankeyData(rawData);
+
+    // 设置图表选项
+    sankeyOption.value = {
+      series: [
+        {
+          type: "sankey",
+          data: formattedData.nodes,
+          links: formattedData.links,
+          emphasis: {
+            focus: "adjacency"
+          },
+          lineStyle: {
+            curveness: 0.5
+          },
+          label: {
+            show: true,
+            position: "right"
+          },
+          nodeAlign: "justify"
+        }
+      ],
+      tooltip: {
+        trigger: "item",
+        triggerOn: "mousemove"
+      }
+    };
+
+    console.log("Sankey data:", formattedData); // 用于调试
+  } catch (error) {
+    console.error("Error fetching sankey data:", error);
+  }
+};
+
+// 监听血清型筛选值的变化，更新全选状态
+watch(
+  () => mapFilters.serovar,
+  val => {
+    if (!val || val.length === 0) {
+      checkAll.value = false;
+      indeterminate.value = false;
+    } else if (val.length === serovarOptions.value.length) {
+      checkAll.value = true;
+      indeterminate.value = false;
+    } else {
+      indeterminate.value = true;
+    }
+  }
+);
+
+// 监听宿主筛选值的变化，更新全选状态
+watch(
+  () => mapFilters.host,
+  val => {
+    if (!val || val.length === 0) {
+      hostCheckAll.value = false;
+      hostIndeterminate.value = false;
+    } else if (val.length === hostOptions.value.length) {
+      hostCheckAll.value = true;
+      hostIndeterminate.value = false;
+    } else {
+      hostIndeterminate.value = true;
+    }
+  }
+);
+
+// 监听OneHealth筛选值的变化，更新全选状态
+watch(
+  () => mapFilters.onehealth,
+  val => {
+    if (!val || val.length === 0) {
+      oneHealthCheckAll.value = false;
+      oneHealthIndeterminate.value = false;
+    } else if (val.length === oneHealthOptions.value.length) {
+      oneHealthCheckAll.value = true;
+      oneHealthIndeterminate.value = false;
+    } else {
+      oneHealthIndeterminate.value = true;
+    }
+  }
+);
+
+// 表格搜索条件
+const searchStrain = ref("");
+const searchSerovar = ref("");
+const searchSubspecies = ref("");
+const searchST = ref("");
+const searchIsolationSource = ref("");
+const searchHost = ref("");
+const searchCollectionYear = ref("");
+const searchCountry = ref("");
+const searchOneHealth = ref("");
+const searchOneHealth2 = ref("");
+const searchOneHealth3 = ref("");
+const searchArgNumber = ref("");
+const searchVfNumber = ref("");
+const searchInvasive = ref("");
+
+// 计算过滤后的表格数据
+const filterTableData = computed(() => {
+  return metaTableData.value.filter(data => {
+    return (
+      (!searchStrain.value || (data.strain && data.strain.toLowerCase().includes(searchStrain.value.toLowerCase()))) &&
+      (!searchSubspecies.value ||
+        (data.subspecies && data.subspecies.toLowerCase().includes(searchSubspecies.value.toLowerCase()))) &&
+      (!searchSerovar.value || (data.serovar && data.serovar.toLowerCase().includes(searchSerovar.value.toLowerCase()))) &&
+      (!searchST.value || (data.st && data.st.toLowerCase().includes(searchST.value.toLowerCase()))) &&
+      (!searchIsolationSource.value ||
+        (data.isolationSource && data.isolationSource.toLowerCase().includes(searchIsolationSource.value.toLowerCase()))) &&
+      (!searchHost.value || (data.host && data.host.toLowerCase().includes(searchHost.value.toLowerCase()))) &&
+      (!searchCollectionYear.value ||
+        (data.collectionYear && data.collectionYear.toString().includes(searchCollectionYear.value))) &&
+      (!searchCountry.value || (data.country && data.country.toLowerCase().includes(searchCountry.value.toLowerCase()))) &&
+      (!searchOneHealth.value ||
+        (data.oneHealth && data.oneHealth.toLowerCase().includes(searchOneHealth.value.toLowerCase()))) &&
+      (!searchOneHealth2.value ||
+        (data.onehealth2 && data.onehealth2.toLowerCase().includes(searchOneHealth2.value.toLowerCase()))) &&
+      (!searchOneHealth3.value ||
+        (data.oneHealth3 && data.oneHealth3.toLowerCase().includes(searchOneHealth3.value.toLowerCase()))) &&
+      (!searchArgNumber.value || (data.argNumber && data.argNumber.toString().includes(searchArgNumber.value))) &&
+      (!searchVfNumber.value || (data.vfNumber && data.vfNumber.toString().includes(searchVfNumber.value))) &&
+      (!searchInvasive.value || (data.invasive && data.invasive.toString().includes(searchInvasive.value)))
+    );
+  });
 });
-
-// 保存Meta信息列表
-const metaTableData = ref<any[]>([]);
 
 // 分页相关数据
 const pagination = reactive({
-  currentPage: 1,
-  pageSize: 10,
+  currentPage: 1, //加载页面时设置当前为第一页
+  pageSize: 10, //每页显示的记录数
   total: 0
 });
 
@@ -324,10 +896,17 @@ const pagination = reactive({
 const getMetaList = async () => {
   try {
     // 使用更简单的参数格式
-    const params = {
+    const params: any = {
       curPage: pagination.currentPage,
       limit: pagination.pageSize
     };
+    // 添加筛选条件
+    if (tableFilters.serovar) params.serovar = tableFilters.serovar;
+    if (tableFilters.host) params.host = tableFilters.host;
+    if (tableFilters.yearRange && tableFilters.yearRange.length === 2) {
+      params.startYear = tableFilters.yearRange[0];
+      params.endYear = tableFilters.yearRange[1];
+    }
 
     const res: any = await getMetaListApi(params);
 
@@ -365,96 +944,7 @@ const getMetaList = async () => {
   } catch (error) {
     console.error("获取Meta数据失败:", error);
     metaTableData.value = [];
-
-    // // 使用虚拟数据进行测试
-    // const mockData: any[] = [
-    //   {
-    //     strain: "LT2",
-    //     subspecies: "Salmonella enterica subsp. enterica",
-    //     serovar: "Typhimurium",
-    //     st: "ST19",
-    //     isolationSource: "Human stool",
-    //     host: "Homo sapiens",
-    //     collectionYear: "2015",
-    //     country: "China",
-    //     oneHealth: "Yes",
-    //     onehealth2: "No",
-    //     oneHealth3: "Yes",
-    //     argNumber: "12",
-    //     vfNumber: "8",
-    //     invasive: "High"
-    //   },
-    //   {
-    //     strain: "SL1344",
-    //     subspecies: "Salmonella enterica subsp. enterica",
-    //     serovar: "Typhimurium",
-    //     st: "ST24",
-    //     isolationSource: "Mouse feces",
-    //     host: "Mus musculus",
-    //     collectionYear: "2018",
-    //     country: "United States",
-    //     oneHealth: "No",
-    //     onehealth2: "Yes",
-    //     oneHealth3: "No",
-    //     argNumber: "9",
-    //     vfNumber: "11",
-    //     invasive: "Medium"
-    //   },
-    //   {
-    //     strain: "NCTC13345",
-    //     subspecies: "Salmonella enterica subsp. enterica",
-    //     serovar: "Enteritidis",
-    //     st: "ST32",
-    //     isolationSource: "Chicken",
-    //     host: "Gallus gallus",
-    //     collectionYear: "2020",
-    //     country: "United Kingdom",
-    //     oneHealth: "Yes",
-    //     onehealth2: "Yes",
-    //     oneHealth3: "No",
-    //     argNumber: "15",
-    //     vfNumber: "6",
-    //     invasive: "High"
-    //   },
-    //   {
-    //     strain: "CVM27676",
-    //     subspecies: "Salmonella enterica subsp. enterica",
-    //     serovar: "Newport",
-    //     st: "ST11",
-    //     isolationSource: "Beef",
-    //     host: "Bos taurus",
-    //     collectionYear: "2019",
-    //     country: "Canada",
-    //     oneHealth: "No",
-    //     onehealth2: "No",
-    //     oneHealth3: "Yes",
-    //     argNumber: "18",
-    //     vfNumber: "7",
-    //     invasive: "Medium"
-    //   },
-    //   {
-    //     strain: "SC-B67",
-    //     subspecies: "Salmonella enterica subsp. enterica",
-    //     serovar: "Typhi",
-    //     st: "ST45",
-    //     isolationSource: "Human blood",
-    //     host: "Homo sapiens",
-    //     collectionYear: "2017",
-    //     country: "India",
-    //     oneHealth: "Yes",
-    //     onehealth2: "No",
-    //     oneHealth3: "Yes",
-    //     argNumber: "22",
-    //     vfNumber: "13",
-    //     invasive: "Very High"
-    //   }
-    // ];
-
-    // // 模拟分页数据
-    // const startIndex = (pagination.currentPage - 1) * pagination.pageSize;
-    // const endIndex = startIndex + pagination.pageSize;
-    // metaTableData.value = mockData.slice(startIndex, endIndex);
-    // pagination.total = mockData.length;
+    pagination.total = 0;
   }
 };
 
@@ -467,15 +957,22 @@ const handleSizeChange = (val: number) => {
 
 // 处理当前页改变
 const handleCurrentChange = (val: number) => {
+  console.log("切换到:", val, "页");
   pagination.currentPage = val;
   getMetaList();
 };
 
 onMounted(() => {
+  //调用所有必要的数据加载方法
   getWorldmapData();
   getMetaList();
   getSequenceYearData();
-  getSerovarData();
+  getSerovarPieData();
+  getHostOptions();
+  getSerovarOptions(); // 添加血清型选项获取
+  getOneHealthOptions(); // 添加OneHealth选项获取
+  getSTPieData();
+  getSankeyData();
 });
 </script>
 
@@ -485,5 +982,20 @@ onMounted(() => {
   display: flex;
   justify-content: center;
   margin-top: 20px;
+}
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: center;
+  padding: 15px 0;
+}
+.filter-item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.filter-item label {
+  white-space: nowrap;
 }
 </style>

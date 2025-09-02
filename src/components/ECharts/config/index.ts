@@ -9,8 +9,9 @@ import {
   GaugeChart,
   FunnelChart,
   BoxplotChart,
-  SunburstChart,
-  TreemapChart
+  SunburstChart, // 导入旭日图组件
+  TreemapChart,
+  SankeyChart // 导入桑基图组件
 } from "echarts/charts";
 import {
   TitleComponent,
@@ -99,7 +100,8 @@ echarts.use([
   TreemapChart,
   UniversalTransition,
   CanvasRenderer,
-  SunburstChart
+  SunburstChart, // 导入旭日图组件
+  SankeyChart // 导入桑基图组件
 ]);
 
 export default echarts;
