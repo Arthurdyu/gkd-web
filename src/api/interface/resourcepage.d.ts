@@ -71,21 +71,21 @@ export declare namespace Resource {
   // Meta 表格Item数据请求参数
   interface ReqMetaIem {
     strain?: string;
-    //subspecies?: null | string;
-    // serovar?: null | string;
-    // st?: null | string;
-    // isolationSource?: null | string;
-    // host?: null | string;
-    // collectionYear?: null | string;
-    // country?: null | string;
-    // oneHealth?: null | string;
-    //onehealth2?: null | string;
-    //oneHealth3?: null | string;
-    // argNumber?: null | string;
-    // vfNumber?: null | string;
-    // invasive?: null | string;
-    // argList?: null | string;
-    // vfList?: null | string;
+    subspecies?: null | string;
+    serovar?: null | string;
+    st?: null | string;
+    isolationSource?: null | string;
+    host?: null | string;
+    collectionYear?: null | string;
+    country?: null | string;
+    oneHealth?: null | string;
+    onehealth2?: null | string;
+    oneHealth3?: null | string;
+    argNumber?: null | string;
+    vfNumber?: null | string;
+    invasive?: null | string;
+    argList?: null | string;
+    vfList?: null | string;
   }
 
   // Meta 表格Item数据

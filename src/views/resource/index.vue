@@ -893,13 +893,72 @@ const pagination = reactive({
 });
 
 // 获取Meta列表
+// const getMetaList = async () => {
+//   try {
+//     // 使用更简单的参数格式
+//     const params: any = {
+//       curPage: pagination.currentPage,
+//       limit: pagination.pageSize
+//     };
+//     // 添加筛选条件
+//     if (tableFilters.serovar) params.serovar = tableFilters.serovar;
+//     if (tableFilters.host) params.host = tableFilters.host;
+//     if (tableFilters.yearRange && tableFilters.yearRange.length === 2) {
+//       params.startYear = tableFilters.yearRange[0];
+//       params.endYear = tableFilters.yearRange[1];
+//     }
+
+//     const res: any = await getMetaListApi(params);
+
+//     // 字段名映射
+//     const transformMetaItem = (item: any) => {
+//       return {
+//         strain: item.strain,
+//         subspecies: item.subspecies1 || item.subspecies2 || "", // 后端字段名不同
+//         serovar: item.serovar,
+//         st: item.st,
+//         isolationSource: item.isolationSource,
+//         host: item.host,
+//         collectionYear: item.collectionYear,
+//         country: item.country,
+//         oneHealth: item.oneHealth,
+//         onehealth2: item.oneHealthSecondary,
+//         oneHealth3: item.oneHealthTertiary,
+//         argNumber: item.argNumber,
+//         vfNumber: item.vfNumber,
+//         invasive: item.invasiveIndex
+//       };
+//     };
+
+//     // 根据实际返回的数据结构调整访问路径
+//     if (res && res.data) {
+//       //metaTableData.value = res.data.list || [];
+//       // 转换数据格式以适配前端组件
+//       metaTableData.value = (res.data.list || []).map(transformMetaItem);
+//       pagination.total = res.data.totalCount || 0;
+//       console.log("Meta数据列表:", res);
+//     } else {
+//       metaTableData.value = [];
+//       pagination.total = 0;
+//     }
+//   } catch (error) {
+//     console.error("获取Meta数据失败:", error);
+//     metaTableData.value = [];
+//     pagination.total = 0;
+//   }
+// };
+
+// ... 保留原有代码 ...
+
+// 修改 getMetaList 方法，添加搜索参数
 const getMetaList = async () => {
   try {
-    // 使用更简单的参数格式
+    // 构造参数，包括分页和搜索条件
     const params: any = {
       curPage: pagination.currentPage,
       limit: pagination.pageSize
     };
+
     // 添加筛选条件
     if (tableFilters.serovar) params.serovar = tableFilters.serovar;
     if (tableFilters.host) params.host = tableFilters.host;
@@ -907,6 +966,22 @@ const getMetaList = async () => {
       params.startYear = tableFilters.yearRange[0];
       params.endYear = tableFilters.yearRange[1];
     }
+
+    // 添加搜索条件
+    if (searchStrain.value) params.strain = searchStrain.value;
+    if (searchSubspecies.value) params.subspecies = searchSubspecies.value;
+    if (searchSerovar.value) params.serovar = searchSerovar.value;
+    if (searchST.value) params.st = searchST.value;
+    if (searchIsolationSource.value) params.isolationSource = searchIsolationSource.value;
+    if (searchHost.value) params.host = searchHost.value;
+    if (searchCollectionYear.value) params.collectionYear = searchCollectionYear.value;
+    if (searchCountry.value) params.country = searchCountry.value;
+    if (searchOneHealth.value) params.oneHealth = searchOneHealth.value;
+    if (searchOneHealth2.value) params.onehealth2 = searchOneHealth2.value;
+    if (searchOneHealth3.value) params.oneHealth3 = searchOneHealth3.value;
+    if (searchArgNumber.value) params.argNumber = searchArgNumber.value;
+    if (searchVfNumber.value) params.vfNumber = searchVfNumber.value;
+    if (searchInvasive.value) params.invasive = searchInvasive.value;
 
     const res: any = await getMetaListApi(params);
 
@@ -932,7 +1007,6 @@ const getMetaList = async () => {
 
     // 根据实际返回的数据结构调整访问路径
     if (res && res.data) {
-      //metaTableData.value = res.data.list || [];
       // 转换数据格式以适配前端组件
       metaTableData.value = (res.data.list || []).map(transformMetaItem);
       pagination.total = res.data.totalCount || 0;
@@ -948,18 +1022,53 @@ const getMetaList = async () => {
   }
 };
 
-// 处理分页大小改变
-const handleSizeChange = (val: number) => {
-  pagination.pageSize = val;
-  pagination.currentPage = 1;
-  getMetaList();
+// 添加防抖函数
+let searchTimeout: number | null = null;
+
+const handleSearch = () => {
+  if (searchTimeout) {
+    clearTimeout(searchTimeout);
+  }
+  searchTimeout = setTimeout(() => {
+    pagination.currentPage = 1; // 重置到第一页
+    getMetaList();
+  }, 500) as unknown as number;
 };
 
-// 处理当前页改变
+// 监听所有搜索输入框的变化
+watch(
+  [
+    searchStrain,
+    searchSubspecies,
+    searchSerovar,
+    searchST,
+    searchIsolationSource,
+    searchHost,
+    searchCollectionYear,
+    searchCountry,
+    searchOneHealth,
+    searchOneHealth2,
+    searchOneHealth3,
+    searchArgNumber,
+    searchVfNumber,
+    searchInvasive
+  ],
+  () => {
+    handleSearch();
+  }
+);
+
+// 修改分页处理函数
 const handleCurrentChange = (val: number) => {
   console.log("切换到:", val, "页");
   pagination.currentPage = val;
-  getMetaList();
+  getMetaList(); // 重新获取数据
+};
+
+const handleSizeChange = (val: number) => {
+  pagination.pageSize = val;
+  pagination.currentPage = 1; // 重置到第一页
+  getMetaList(); // 重新获取数据
 };
 
 onMounted(() => {
