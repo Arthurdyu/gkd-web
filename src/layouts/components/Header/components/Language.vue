@@ -34,6 +34,7 @@ const languageList = [
 const changeLanguage = (lang: string) => {
   i18n.locale.value = lang;
   globalStore.setGlobalState("language", lang as LanguageType);
+  window.location.reload(); //切换中英文时重新加载页面。
 };
 </script>
 <style lang="scss" scoped>

@@ -4,8 +4,8 @@ import { SYS } from "@/api/config/servicePort";
 import { Resource } from "../interface/resourcepage";
 
 //世界地图数据
-export function getWorldmapApi() {
-  return http.get<Resource.ResWorldmap>(`${SYS}/resource/getWorldMapValue`);
+export function getWorldmapApi(params?: any) {
+  return http.get<Resource.ResWorldmap>(`${SYS}/resource/getWorldMapValue`, params);
   //路径：resource/getWorldMapValue 是apifox中世界地图的接口的路径
 }
 

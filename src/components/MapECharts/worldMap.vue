@@ -48,7 +48,7 @@ function draw() {
   }
 }
 const setMapOptions = () => {
-  optionMap.series![0] = { ...optionMap.series![0], zoom: 1.63 }; // map 改为 world
+  optionMap.series![0] = { ...optionMap.series![0], zoom: 1.2 }; // map 改为 world
   optionMap.series![0].data = props.mapData ?? [];
   const sortMapData = props.mapData!.sort((a, b) => b.value - a.value) ?? [];
   optionMap.visualMap!["max"] = sortMapData.at(0)?.value ?? 200;

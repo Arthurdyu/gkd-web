@@ -18,44 +18,43 @@ export const mapOption = {
   tooltip: {
     trigger: "item", // 触发类型, 数据项图形触发，主要在散点图，饼图等无类目轴的图表中使用
     formatter: function (val) {
+      console.log(val.data);
       if (val.data == null) return "";
-      return val.data.name + ": " + val.data.value;
+      return val.data.text + val.data.name + ": " + val.data.value;
     }
   },
   // 视觉映射组件,地图的图例颜色映射
   visualMap: {
-    bottom: 0,
-    right: 100,
-    text: ["最多", "100,000", "10,000", "1000", "100", "最少"],
+    type: "piecewise",
+    bottom: 0, // 可以根据需要调整底部距离
+    right: 200, // 可以根据需要调整右侧距离
+    orient: "horizontal", // 设置为水平方向排列
     realtime: false,
     calculable: true,
-    //color: ["#bf1600ff", "#ec7878ff"], //世界地图映射颜色范围
-    // 可以使用 splitNumber 或者 pieces 来控制分段
-    //splitNumber: 6, // 显示6个分段
-    // 或者使用 pieces 自定义每个分段
     pieces: [
-      { min: 100000, color: "#890101ff" },
-      { min: 10000, color: "#bf1600ff" },
-      { min: 1000, max: 9999, color: "#d73027" },
-      { min: 100, max: 999, color: "#ec7878ff" },
-      { min: 1, max: 99, color: "#f4a582" },
-      { value: 0, color: "#f0e9e9" }
+      { min: 100000, color: "#760202ff", label: "≥100,000" },
+      { min: 10000, max: 99999, color: "#bf1600ff", label: "≥10,000" },
+      { min: 1000, max: 9999, color: "#d45049ff", label: "≥1000" },
+      { min: 100, max: 999, color: "#ea8f8fff", label: "≥100" },
+      { min: 1, max: 99, color: "#f9c0a8ff", label: "1-99" }
+      //{ value: 0, color: "#f0e9e9", label: "0" }
     ]
   },
+
   series: [
     {
       type: "map",
       name: "地图",
       map: "world",
       roam: true,
-      center: [105, 36],
+      center: [16, 16], //修改初始化中心位置
       // 图形上的文本标签
       label: {
         show: false // 是否显示对应地名
       },
-      zoom: 1.63,
+      zoom: 1.63, // 地图的缩放比例
       scaleLimit: {
-        min: 1
+        min: 0.5
       },
       // 地图区域的多边形 图形样式
       itemStyle: {

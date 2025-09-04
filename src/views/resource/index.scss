@@ -1,4 +1,3 @@
-// 容器样式
 .resource-container {
   box-sizing: border-box;
   display: flex;
@@ -7,59 +6,90 @@
   width: 100%;
   min-height: 100vh;
   padding: 20px;
-}
-
-// 地图区域样式
-.resource-map {
-  position: relative;
-  display: flex;
-  flex-shrink: 0; // 防止被压缩
-  width: 100%;
-  height: 500px; // 基础高度，可根据需求调整
-  overflow: hidden;
-  background-color: #f8f8f8; // 蓝色代替地图
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
-  .mapEcharts {
+  .map-filter {
     display: flex;
-    flex: 2;
-    margin: auto;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    width: 100%;
+    height: 60px;
+    padding: 10 10px;
+
+    // background-color: #d92f2f;
+    box-shadow: inset 0 -1px 0 rgb(0 0 0 / 10%);
   }
+  .resource-map {
+    position: relative;
+    display: flex;
+    flex-shrink: 0;
+    width: 100%;
+    height: 500px;
+    overflow: hidden;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
+  }
+
+  // 地图筛选栏特殊样式
+  .filter-bar {
+    position: relative;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    width: 100%;
+    height: 60px;
+    padding-top: 10px;
+
+    // background-color: rgb(255 255 255 / 90%);
+    border-bottom: 1px solid rgb(0 0 0 / 10%);
+  }
+
+  // 地图区域样式
   .map-container {
     position: relative;
     display: flex;
     flex: 3;
+    .mapEcharts {
+      position: relative;
+      display: flex;
+      flex: 2;
+      margin: auto;
+    }
     .top-countries {
-      width: 500px;
+      position: relative;
+      display: flex;
+      flex: 1;
+      flex-direction: column; /* 使国家项目垂直排列 */
+      align-items: flex-end; /* 右对齐 */
       margin-top: 50px;
-      margin-right: 50px;
+      margin-right: 100px;
       .country-item {
         position: relative;
         display: flex;
-        align-items: center;
-        min-width: 100px;
-        height: 20px;
-        margin-bottom: 10px;
+        flex-direction: row; /* 垂直排列子元素 */
+        align-items: first baseline; /* 右对齐子元素 */
+        width: 100%;
+        min-width: 20px;
+        height: auto;
+        min-height: 40px; /* 增加最小高度以容纳垂直排列 */
         .country-name {
           flex-shrink: 0;
-          padding-right: 10px;
-          margin-left: auto; // 将国家名称推向左侧
-          // font-weight: bold;
-          text-align: right;
+          width: 120px; /* 固定名称宽度 */
+          margin-right: 10px; /* 名称右间距 */
+          text-align: right; // 文字右对齐
           white-space: nowrap;
         }
         .bar {
-          flex-shrink: 1; // 允许进度条收缩
-          min-width: 20px;
-          height: 100%;
+          flex-shrink: 0;
+          height: 10px;
           background-color: #ce0e1f;
-          border-radius: 15px;
+          border-radius: 5px;
         }
         .country-value {
           flex-shrink: 0;
-          padding-left: 10px;
-
-          // font-weight: bold;
+          margin-left: 10px; /* 数值左间距 */
+          text-align: left;
+          white-space: nowrap;
         }
       }
     }
@@ -74,7 +104,7 @@
   gap: 16px;
   align-items: center;
   width: 100%;
-  padding: 12px 16px;
+  padding: 12px 60px;
   background-color: #f8f9fa;
   border-bottom: 1px solid #e9ecef;
   .filter-item {
@@ -129,16 +159,6 @@
       }
     }
   }
-}
-
-// 地图筛选栏特殊样式
-.resource-map .filter-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 10;
-  background-color: rgb(255 255 255 / 90%);
-  border-bottom: 1px solid rgb(0 0 0 / 10%);
 }
 
 // 图表容器样式

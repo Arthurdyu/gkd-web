@@ -3,17 +3,17 @@
     <div class="map-filter">
       <div class="filter-bar">
         <!-- 血清型筛选 -->
-        <div class="filter-item">
-          <label>血清型:</label>
+        <div class="filter-item" style="margin-left: 20px">
+          <label>{{ $t("resource.serovar") }}:</label>
           <el-select
             v-model="mapFilters.serovar"
             multiple
             clearable
+            filterable
             collapse-tags
             placeholder="请选择血清型"
             popper-class="custom-header"
             :max-collapse-tags="1"
-            @change="handleMapFilterChange"
             style="width: 200px"
           >
             <template #header>
@@ -21,20 +21,22 @@
             </template>
             <el-option v-for="item in serovarOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
+          <!-- 调试信息 -->
+          <div style="margin-left: 10px; font-size: 12px; color: #999999">选项数: {{ serovarOptions.length }}</div>
         </div>
 
         <!-- 宿主筛选 -->
         <div class="filter-item">
-          <label>宿主:</label>
+          <label>{{ $t("resource.st") }}:</label>
           <el-select
             v-model="mapFilters.host"
             multiple
             clearable
+            filterable
             collapse-tags
             placeholder="请选择宿主"
             popper-class="custom-header"
             :max-collapse-tags="1"
-            @change="handleMapFilterChange"
             style="width: 200px"
           >
             <template #header>
@@ -44,19 +46,21 @@
             </template>
             <el-option v-for="item in hostOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
+          <!-- 调试信息 -->
+          <div style="margin-left: 10px; font-size: 12px; color: #999999">选项数: {{ hostOptions.length }}</div>
         </div>
         <!-- 生境筛选 -->
         <div class="filter-item">
-          <label>生境:</label>
+          <label>{{ $t("resource.oneHealth") }}:</label>
           <el-select
             v-model="mapFilters.onehealth"
             multiple
             clearable
+            filterable
             collapse-tags
             placeholder="请选择生境"
             popper-class="custom-header"
             :max-collapse-tags="1"
-            @change="handleMapFilterChange"
             style="width: 200px"
           >
             <template #header>
@@ -66,10 +70,12 @@
             </template>
             <el-option v-for="item in oneHealthOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
+          <!-- 调试信息 -->
+          <div style="margin-left: 10px; font-size: 12px; color: #999999">选项数: {{ oneHealthOptions.length }}</div>
         </div>
 
         <!-- 年份区间筛选 -->
-        <div class="filter-item">
+        <!-- <div class="filter-item">
           <label>年份区间:</label>
           <el-date-picker
             v-model="mapFilters.yearRange"
@@ -79,13 +85,13 @@
             end-placeholder="结束年份"
             format="YYYY"
             value-format="YYYY"
-            @change="handleMapFilterChange"
             style="width: 240px"
           />
-        </div>
+        </div> -->
 
         <!-- 重置按钮 -->
         <div class="filter-item">
+          <el-button type="primary" @click="getWorldmapData">筛选</el-button>
           <el-button @click="resetMapFilters">重置筛选</el-button>
         </div>
       </div>
@@ -97,7 +103,6 @@
         <div class="top-countries">
           <div v-for="(country, index) in topCountries" :key="index" class="country-item">
             <span class="country-name">{{ country.name }}</span>
-            <!-- <div class="bar" :style="{ width: calculateWidth(country.value) + 'px' }"></div> -->
             <div class="bar" :style="{ width: getBarWidth(country.value) }"></div>
             <span class="country-value">{{ country.value }}</span>
           </div>
@@ -266,7 +271,7 @@ import {
   getSTApi,
   getSankeyApi
 } from "@/api/modules/resourcepage";
-import { ref, onMounted, reactive, watch, computed } from "vue";
+import { ref, onMounted, onUnmounted, reactive, watch, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { Resource } from "@/api/interface/resourcepage";
 
@@ -276,15 +281,8 @@ const mapData = ref<Array<{ name: string; value: number }>>([]);
 const mapFilters = reactive({
   serovar: [] as string[],
   host: [] as string[],
-  onehealth: [] as string[],
-  yearRange: []
-});
-
-// 表格筛选条件（保持原有分页筛选）
-const tableFilters = reactive({
-  serovar: "",
-  host: "",
-  yearRange: []
+  onehealth: [] as string[]
+  //yearRange: []
 });
 
 // 筛选选项
@@ -307,30 +305,56 @@ const oneHealthCheckAll = ref(false);
 const hostIndeterminate = ref(false);
 const oneHealthIndeterminate = ref(false);
 
-// 定义计算bar宽度的函数,log10)
+// 定义计算bar宽度的函数，基于对数比例
 const getBarWidth = (value: number): string => {
-  const logValue = Math.log10(value + 1); // 避免log(0)
+  if (topCountries.value.length === 0) return "0px";
+
+  // 获取最大值用于比例计算
+  const maxValue = Math.max(...topCountries.value.map(item => item.value));
+
+  // 计算对数
+  const logValue = Math.log10(value + 1);
+  const maxLogValue = Math.log10(maxValue + 1);
+
+  // 设置最大宽度
   const maxWidth = 300;
-  const minWidth = 10;
-  const width = (logValue / 5.5) * (maxWidth - minWidth) + minWidth;
-  return `${width}px`;
+
+  // 按比例计算宽度
+  const width = (logValue / maxLogValue) * maxWidth;
+  //console.log("Bar width for value", value, ":", width);
+  return `${Math.max(width, 5)}px`; // 最小宽度为5px
 };
-//
-// const calculateWidth = (value: number) => {
-//   if (topCountries.value.length === 0) return 100;
+
+// 定义计算bar宽度的函数，基于绝对值等比例
+// const getBarWidth = (value: number): string => {
+//   if (topCountries.value.length === 0) return "0px";
+
+//   // 获取最大值用于比例计算
 //   const maxValue = Math.max(...topCountries.value.map(item => item.value));
-//   // 最小宽度60px，最大宽度200px
-//   return 60 + (value / maxValue) * 140;
+
+//   // 设置最大宽度
+//   const maxWidth = 300;
+
+//   // 按绝对值比例计算宽度
+//   const width = (value / maxValue) * maxWidth;
+//   console.log("Bar width for value", value, ":", width);
+//   return `${Math.max(width, 5)}px`; // 最小宽度为5px
 // };
-//世界地图数据
 
 const getWorldmapData = async () => {
   try {
-    const { data } = await getWorldmapApi();
+    const params = {
+      ...mapFilters,
+      serovar: mapFilters.serovar.join(","),
+      onehealth: mapFilters.onehealth.join(","),
+      host: mapFilters.host.join(",")
+    };
+    const { data } = await getWorldmapApi(params);
     // 转换数据格式以适配前端组件
     mapData.value = data.list.map(item => ({
       name: item.country,
       value: item.number
+      //text: "country"
     }));
 
     // 获取前10个国家用于右侧显示
@@ -342,12 +366,6 @@ const getWorldmapData = async () => {
   } catch (error) {
     console.error("获取世界地图数据失败:", error);
   }
-};
-
-// 处理地图筛选条件变化
-const handleMapFilterChange = () => {
-  // 只重新加载地图数据
-  getWorldmapData();
 };
 
 // 处理全选
@@ -385,7 +403,7 @@ const resetMapFilters = () => {
   mapFilters.serovar = [];
   mapFilters.host = [];
   mapFilters.onehealth = [];
-  mapFilters.yearRange = [];
+  //mapFilters.yearRange = [];
   checkAll.value = false;
   indeterminate.value = false;
   hostCheckAll.value = false;
@@ -395,16 +413,32 @@ const resetMapFilters = () => {
   getWorldmapData();
 };
 
+// 添加一个响应式变量来跟踪组件是否已挂载
+const isComponentMounted = ref(true);
+
+onUnmounted(() => {
+  isComponentMounted.value = false;
+});
+
 // MetaList 获取宿主选项
 const getHostOptions = async () => {
   try {
-    // 构造参数获取所有数据
+    // 构造参数获取所有数据，设置一个更大的limit值
     const params: any = {
       curPage: 1,
-      limit: 10000 // 获取足够多的数据用于选项展示
+      limit: 100 // 增加limit以确保能获取所有46万条数据
     };
 
-    const res: any = await getMetaListApi(params);
+    console.log("开始获取宿主选项数据，参数:", params);
+    // 正确传递参数，将cancel配置作为第三个参数传递
+    const res: any = await getMetaListApi(params, {}, { cancel: false });
+    console.log("宿主选项API调用完成，响应数据:", res);
+
+    // 检查组件是否仍然挂载
+    if (!isComponentMounted.value) {
+      console.log("组件已卸载，停止处理宿主选项数据");
+      return; // 组件已卸载，不继续处理
+    }
 
     // 处理宿主统计数据
     if (res && res.data && res.data.list) {
@@ -423,32 +457,53 @@ const getHostOptions = async () => {
         label: host,
         value: host
       }));
+      console.log("宿主选项数据处理完成，hostOptions:", hostOptions.value);
+    } else {
+      console.warn("宿主选项数据格式不正确或为空:", res);
     }
-  } catch (error) {
+  } catch (error: any) {
+    // 检查组件是否仍然挂载
+    if (!isComponentMounted.value) {
+      console.log("组件已卸载，忽略宿主选项获取错误");
+      return;
+    }
+
+    // 检查是否是请求取消错误
+    if (error.name === "CanceledError" || error.code === "ERR_CANCELED") {
+      console.log("获取宿主选项请求被取消:", error.message);
+      return; // 请求被取消，正常现象，不需要处理
+    }
+
     console.error("获取宿主选项失败:", error);
     // 使用模拟数据作为备选
     hostOptions.value = [
       { label: "人类", value: "Human" },
       { label: "猪", value: "Pig" },
-      { label: "牛", value: "Cattle" },
-      { label: "鸡", value: "Chicken" },
-      { label: "环境", value: "Environment" },
-      { label: "鸭", value: "Duck" },
-      { label: "羊", value: "Sheep" }
+      { label: "牛", value: "Cattle" }
     ];
+    console.log("使用模拟数据作为宿主选项:", hostOptions.value);
   }
 };
 
 // 获取血清型选项
 const getSerovarOptions = async () => {
   try {
-    // 构造参数获取所有数据
+    // 构造参数获取所有数据，设置一个更大的limit值
     const params: any = {
       curPage: 1,
-      limit: 10000 // 获取足够多的数据用于选项展示
+      limit: 200000 // 增加limit以确保能获取所有46万条数据
     };
 
-    const res: any = await getMetaListApi(params);
+    console.log("开始获取血清型选项数据，参数:", params);
+    // 正确传递参数，将cancel配置作为第三个参数传递
+    const res: any = await getMetaListApi(params, {}, { cancel: false });
+    console.log("血清型选项API调用完成，响应数据:", res);
+
+    // 检查组件是否仍然挂载
+    if (!isComponentMounted.value) {
+      console.log("组件已卸载，停止处理血清型选项数据");
+      return; // 组件已卸载，不继续处理
+    }
 
     // 处理血清型统计数据
     if (res && res.data && res.data.list) {
@@ -467,8 +522,23 @@ const getSerovarOptions = async () => {
         label: serovar,
         value: serovar
       }));
+      console.log("血清型选项数据处理完成，serovarOptions:", serovarOptions.value);
+    } else {
+      console.warn("血清型选项数据格式不正确或为空:", res);
     }
-  } catch (error) {
+  } catch (error: any) {
+    // 检查组件是否仍然挂载
+    if (!isComponentMounted.value) {
+      console.log("组件已卸载，忽略血清型选项获取错误");
+      return;
+    }
+
+    // 检查是否是请求取消错误
+    if (error.name === "CanceledError" || error.code === "ERR_CANCELED") {
+      console.log("获取血清型选项请求被取消:", error.message);
+      return; // 请求被取消，正常现象，不需要处理
+    }
+
     console.error("获取血清型选项失败:", error);
     // 使用模拟数据作为备选
     serovarOptions.value = [
@@ -477,19 +547,29 @@ const getSerovarOptions = async () => {
       { label: "Newport", value: "Newport" },
       { label: "Javiana", value: "Javiana" }
     ];
+    console.log("使用模拟数据作为血清型选项:", serovarOptions.value);
   }
 };
 
 // 获取OneHealth选项
 const getOneHealthOptions = async () => {
   try {
-    // 构造参数获取所有数据
+    // 构造参数获取所有数据，设置一个更大的limit值
     const params: any = {
       curPage: 1,
-      limit: 10000 // 获取足够多的数据用于选项展示
+      limit: 500000 // 增加limit以确保能获取所有46万条数据
     };
 
-    const res: any = await getMetaListApi(params);
+    console.log("开始获取OneHealth选项数据，参数:", params);
+    // 正确传递参数，将cancel配置作为第三个参数传递
+    const res: any = await getMetaListApi(params, {}, { cancel: false });
+    console.log("OneHealth选项API调用完成，响应数据:", res);
+
+    // 检查组件是否仍然挂载
+    if (!isComponentMounted.value) {
+      console.log("组件已卸载，停止处理OneHealth选项数据");
+      return; // 组件已卸载，不继续处理
+    }
 
     // 处理OneHealth统计数据
     if (res && res.data && res.data.list) {
@@ -508,8 +588,23 @@ const getOneHealthOptions = async () => {
         label: oneHealth,
         value: oneHealth
       }));
+      console.log("OneHealth选项数据处理完成，oneHealthOptions:", oneHealthOptions.value);
+    } else {
+      console.warn("OneHealth选项数据格式不正确或为空:", res);
     }
-  } catch (error) {
+  } catch (error: any) {
+    // 检查组件是否仍然挂载
+    if (!isComponentMounted.value) {
+      console.log("组件已卸载，忽略OneHealth选项获取错误");
+      return;
+    }
+
+    // 检查是否是请求取消错误
+    if (error.name === "CanceledError" || error.code === "ERR_CANCELED") {
+      console.log("获取OneHealth选项请求被取消:", error.message);
+      return; // 请求被取消，正常现象，不需要处理
+    }
+
     console.error("获取OneHealth选项失败:", error);
     // 使用模拟数据作为备选
     oneHealthOptions.value = [
@@ -517,6 +612,7 @@ const getOneHealthOptions = async () => {
       { label: "Animal", value: "Animal" },
       { label: "Environment", value: "Environment" }
     ];
+    console.log("使用模拟数据作为OneHealth选项:", oneHealthOptions.value);
   }
 };
 
@@ -586,7 +682,7 @@ const getSequenceYearData = async () => {
   }
 };
 
-//血清型数据
+//血清型饼图数据
 const getSerovarPieData = async () => {
   try {
     const { data } = await getSerovarApi();
@@ -892,64 +988,6 @@ const pagination = reactive({
   total: 0
 });
 
-// 获取Meta列表
-// const getMetaList = async () => {
-//   try {
-//     // 使用更简单的参数格式
-//     const params: any = {
-//       curPage: pagination.currentPage,
-//       limit: pagination.pageSize
-//     };
-//     // 添加筛选条件
-//     if (tableFilters.serovar) params.serovar = tableFilters.serovar;
-//     if (tableFilters.host) params.host = tableFilters.host;
-//     if (tableFilters.yearRange && tableFilters.yearRange.length === 2) {
-//       params.startYear = tableFilters.yearRange[0];
-//       params.endYear = tableFilters.yearRange[1];
-//     }
-
-//     const res: any = await getMetaListApi(params);
-
-//     // 字段名映射
-//     const transformMetaItem = (item: any) => {
-//       return {
-//         strain: item.strain,
-//         subspecies: item.subspecies1 || item.subspecies2 || "", // 后端字段名不同
-//         serovar: item.serovar,
-//         st: item.st,
-//         isolationSource: item.isolationSource,
-//         host: item.host,
-//         collectionYear: item.collectionYear,
-//         country: item.country,
-//         oneHealth: item.oneHealth,
-//         onehealth2: item.oneHealthSecondary,
-//         oneHealth3: item.oneHealthTertiary,
-//         argNumber: item.argNumber,
-//         vfNumber: item.vfNumber,
-//         invasive: item.invasiveIndex
-//       };
-//     };
-
-//     // 根据实际返回的数据结构调整访问路径
-//     if (res && res.data) {
-//       //metaTableData.value = res.data.list || [];
-//       // 转换数据格式以适配前端组件
-//       metaTableData.value = (res.data.list || []).map(transformMetaItem);
-//       pagination.total = res.data.totalCount || 0;
-//       console.log("Meta数据列表:", res);
-//     } else {
-//       metaTableData.value = [];
-//       pagination.total = 0;
-//     }
-//   } catch (error) {
-//     console.error("获取Meta数据失败:", error);
-//     metaTableData.value = [];
-//     pagination.total = 0;
-//   }
-// };
-
-// ... 保留原有代码 ...
-
 // 修改 getMetaList 方法，添加搜索参数
 const getMetaList = async () => {
   try {
@@ -958,14 +996,6 @@ const getMetaList = async () => {
       curPage: pagination.currentPage,
       limit: pagination.pageSize
     };
-
-    // 添加筛选条件
-    if (tableFilters.serovar) params.serovar = tableFilters.serovar;
-    if (tableFilters.host) params.host = tableFilters.host;
-    if (tableFilters.yearRange && tableFilters.yearRange.length === 2) {
-      params.startYear = tableFilters.yearRange[0];
-      params.endYear = tableFilters.yearRange[1];
-    }
 
     // 添加搜索条件
     if (searchStrain.value) params.strain = searchStrain.value;
@@ -983,7 +1013,8 @@ const getMetaList = async () => {
     if (searchVfNumber.value) params.vfNumber = searchVfNumber.value;
     if (searchInvasive.value) params.invasive = searchInvasive.value;
 
-    const res: any = await getMetaListApi(params);
+    // 正确传递参数，将cancel配置作为第三个参数传递
+    const res: any = await getMetaListApi(params, {}, { cancel: false });
 
     // 字段名映射
     const transformMetaItem = (item: any) => {
@@ -1072,6 +1103,7 @@ const handleSizeChange = (val: number) => {
 };
 
 onMounted(() => {
+  console.log("Resource组件已挂载，开始加载数据");
   //调用所有必要的数据加载方法
   getWorldmapData();
   getMetaList();
@@ -1082,6 +1114,7 @@ onMounted(() => {
   getOneHealthOptions(); // 添加OneHealth选项获取
   getSTPieData();
   getSankeyData();
+  console.log("Resource组件数据加载方法已调用");
 });
 </script>
 
