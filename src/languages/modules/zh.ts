@@ -26,7 +26,7 @@ export default {
     serovarPie_title: "血清型 (Top 10)",
     stPieChart_title: "ST型 (Top 10)",
     select_serovar: "请选择血清型",
-    select_oneHealth: "请选择宿主",
+    select_oneHealth: "请选择生境",
     select_host: "请选择宿主",
     map_filter: "筛选",
     map_filter_reset: "重置",

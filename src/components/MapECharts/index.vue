@@ -18,11 +18,14 @@ import { EChartsType, ECElementEvent } from "echarts/core";
 import echarts, { ECOption } from "./config";
 import { useDebounceFn } from "@vueuse/core";
 import { DEFAULT_PRIMARY } from "@/config";
+
 // import { useGlobalStore } from "@/stores/modules/global";
 // import { storeToRefs } from "pinia";
 import { codeTurnInfo, nameToCode, MapInitialOptions, mapOption } from "./helper";
 import { ElMessage } from "element-plus";
 import { mapJson } from "@/api/modules/homepage";
+//import { codeTurnInfo, nameToCode } from "";
+
 const loadingOption = {
   text: "加载中", // 加载提示文本
   color: DEFAULT_PRIMARY, // 加载图标颜色

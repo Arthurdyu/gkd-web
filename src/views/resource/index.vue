@@ -502,8 +502,8 @@ const getOneHealthOptions = async () => {
 
     console.log("开始获取OneHealth选项数据，参数:", params);
     // 正确传递参数，将cancel配置作为第三个参数传递
-    //const res: any = await getMetaListApi(params, {}, { cancel: false });
-    const res: any = await getMetaListApi({ ...params, _t: Date.now() + "_oneHealth" }, {}, { cancel: false }); // getHostOptions
+    //const res: any = await getMetaListApi(params);
+    const res: any = await getMetaListApi({ ...params, _t: Date.now() + "_oneHealth" }); // getHostOptions
 
     console.log("OneHealth选项API调用完成，响应数据:", res);
 
@@ -951,7 +951,7 @@ const getMetaList = async () => {
     if (searchInvasive.value) params.invasive = searchInvasive.value;
 
     // 正确传递参数，将cancel配置作为第三个参数传递
-    const res: any = await getMetaListApi(params, {}, { cancel: false });
+    const res: any = await getMetaListApi(params);
 
     // 字段名映射
     const transformMetaItem = (item: any) => {

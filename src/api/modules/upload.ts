@@ -5,7 +5,7 @@ import { OSS, SYS } from "@/api/config/servicePort";
  */
 // 图片上传
 export const uploadFile = (params: FormData) => {
-  return http.post<Upload.ResFileUrl>(`${OSS}/file/upload`, params, { cancel: false });
+  return http.post<Upload.ResFileUrl>(`${OSS}/file/upload`, params);
 };
 export const uploadUrl = `${OSS}/file/upload`;
 
