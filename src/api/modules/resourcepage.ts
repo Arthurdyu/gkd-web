@@ -8,6 +8,10 @@ export function getWorldmapApi(params?: any) {
   return http.get<Resource.ResWorldmap>(`${SYS}/resource/getWorldMapValue`, params);
   //路径：resource/getWorldMapValue 是apifox中世界地图的接口的路径
 }
+//宿主数据
+export function getHostApi() {
+  return http.get<Resource.ResHost>(`${SYS}/resource/getHostList`);
+}
 
 //每年测序的基因组
 export function getSequenceYearApi() {
@@ -15,8 +19,8 @@ export function getSequenceYearApi() {
 }
 
 //血清型的数据
-export function getSerovarApi() {
-  return http.get<Resource.ResSerovar>(`${SYS}/resource/getSerovarPiechart`);
+export function getSerovarApi(params?: any) {
+  return http.get<Resource.ResSerovar>(`${SYS}/resource/getSerovarPiechart`, params);
 }
 
 //ST型数据

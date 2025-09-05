@@ -11,6 +11,17 @@ export declare namespace Resource {
     country: string;
     number: number;
   }
+
+  //宿主数据
+  interface ResHost {
+    total: number;
+    list: ResHostItem[];
+  }
+  interface ResHostItem {
+    host: string;
+    number: number;
+  }
+
   //每年测序的基因组
   interface SequenceYearItem {
     year: number;

@@ -18,7 +18,7 @@
         </div>
         <div class="chart-container">
           <div class="sunburst-img">
-            <Echarts :option="summerChatOption" width="400px" height="400px" color="#ff0000"></Echarts>
+            <Echarts :option="summerChatOption" width="500px" height="500px" color="#ff0000"></Echarts>
           </div>
           <img class="onehealth-img" src="@/assets/images/OneHealth.svg" />
         </div>
@@ -73,8 +73,8 @@ const getSunburst = async () => {
                 itemStyle: { color: "#FFB6B6" },
                 value: res.data.Animal_Domestic_Animal,
                 children: [
-                  { name: "Food Animal", value: 4000, itemStyle: { color: "#FFD6D6" } },
-                  { name: "Sport Animal", value: 1000, itemStyle: { color: "#FFD6D6" } }
+                  { name: "Food Animal", value: 33772, itemStyle: { color: "#FFD6D6" } }
+                  // { name: "Sport Animal", value: 1000, itemStyle: { color: "#FFD6D6" } }
                 ]
               },
               {

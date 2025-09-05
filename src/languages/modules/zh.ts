@@ -10,6 +10,8 @@ export default {
     onehealth_sunburst: "旭日图"
   },
   resource: {
+    strain: "编号",
+    strain_select: "搜索序列",
     serovar: "血清型",
     st: "ST型",
     year: "分离年份",
@@ -17,9 +19,17 @@ export default {
     isolation_source: "分离来源",
     host: "宿主",
     oneHealth: "One Health(生境)",
+    arg_number: "耐药基因数",
+    vf_number: "毒力因子数",
+    invasive: "侵袭指数",
     sequenceYearperYear_title: "沙门菌测序量",
     serovarPie_title: "血清型 (Top 10)",
     stPieChart_title: "ST型 (Top 10)",
+    select_serovar: "请选择血清型",
+    select_oneHealth: "请选择宿主",
+    select_host: "请选择宿主",
+    map_filter: "筛选",
+    map_filter_reset: "重置",
     serovarStSankey_title: "血清型-ST型对应关系"
   }
 };

@@ -1,123 +1,98 @@
 <template>
   <div class="basic-chart-container">
-    <!-- 左侧：导航栏
-    <div class="left-panel">
-      <h3>Navigation</h3>
-      <ul>
-        <li><a href="#data-sources">Data Sources</a></li>
-        <li><a href="#usage-tips">Usage Tips</a></li>
-        <li><a href="#note">Note</a></li>
-        <li><a href="#database-data">Database Data Comparison</a></li>
-      </ul>
-    </div> -->
-
     <!-- 右侧：主要内容 -->
     <div class="right-panel">
       <!-- 页面标题 -->
-      <h1 id="microbiome-analysis">Basic Charts</h1>
-
-      <!-- 数据源
-      <div id="data-sources" class="data-sources">
-        <h2>Data Sources:</h2>
-        <button class="data-source-button">DB data vs. DB data</button>
-        <p>DB data vs. Upload</p>
-      </div> -->
+      <el-page-header>
+        <template #content>
+          <span class="title"><h1>Basic Charts</h1></span>
+        </template>
+      </el-page-header>
 
       <!-- 使用提示 -->
-      <div id="usage-tips" class="usage-tips">
-        <h2>Usage Tips:</h2>
-        <p>如果你想从数据库中比较两组的信息：</p>
-        <ol>
-          <li>设置您感兴趣的 2 个组的筛选器。</li>
-          <li>点击 "Compare" 按钮来进行比较。</li>
-        </ol>
-      </div>
-
-      <!-- 注意事项 -->
-      <!-- <div id="note" class="note">
-        <h2>Note:</h2>
-        <ul>
-          <li>进行绘图分析的所有数据都是基于我们的沙门菌数据库。</li>
-        </ul>
-      </div> -->
+      <el-card id="usage-tips" class="usage-tips">
+        <template #header>
+          <div class="card-header">
+            <h2>Usage Tips:</h2>
+            <p>如果你想从数据库中比较两组的信息：</p>
+            <p>设置您感兴趣的 2 个组的筛选器</p>
+            <p>点击 'Compare' 按钮来进行比较</p>
+          </div>
+        </template>
+      </el-card>
 
       <!-- 中间：数据对比区域 -->
-      <div id="database-data" class="middle-panel">
-        <h2>Database Data versus Database Data (infant gut microbiome)</h2>
+      <el-card id="database-data" class="middle-panel">
+        <template #header>
+          <div class="card-header">
+            <span>Database Data versus Database Data (infant gut microbiome)</span>
+          </div>
+        </template>
         <div class="group-forms">
           <div class="group-form" v-for="(group, index) in groups" :key="index">
-            <h3>Group {{ index + 1 }}</h3>
-            <form>
-              <label for="country">Country:</label>
-              <select id="country" v-model="group.country">
-                <option value="">Select a country</option>
-                <option value="US">United States</option>
-                <option value="UK">United Kingdom</option>
-                <!-- 更多国家选项 -->
-              </select>
+            <el-divider>
+              <h3>Group {{ index + 1 }}</h3>
+            </el-divider>
+            <el-form label-position="top">
+              <el-form-item label="Country:">
+                <el-select v-model="group.country" placeholder="Select a country" clearable style="width: 100%">
+                  <el-option value="US" label="United States" />
+                  <el-option value="UK" label="United Kingdom" />
+                  <!-- 更多国家选项 -->
+                </el-select>
+              </el-form-item>
 
-              <label for="gender">Gender:</label>
-              <select id="gender" v-model="group.gender">
-                <option value="">Select a gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Unknown">Unknown</option>
-              </select>
+              <el-form-item label="Gender:">
+                <el-select v-model="group.gender" placeholder="Select a gender" clearable style="width: 100%">
+                  <el-option value="Male" label="Male" />
+                  <el-option value="Female" label="Female" />
+                  <el-option value="Unknown" label="Unknown" />
+                </el-select>
+              </el-form-item>
 
-              <label for="delivery">Delivery:</label>
-              <select id="delivery" v-model="group.delivery">
-                <option value="">Select delivery type</option>
-                <option value="Vaginal">Vaginal</option>
-                <option value="Cesarean">Cesarean</option>
-              </select>
-
-              <label for="gestation">Gestation:</label>
-              <select id="gestation" v-model="group.gestation">
-                <option value="">Select gestation</option>
-                <option value="Full-term">Full-term</option>
-                <option value="Preterm">Preterm</option>
-              </select>
-
-              <label for="age">Age (days):</label>
-              <input type="number" id="age-from" v-model="group.ageFrom" placeholder="From" />
-              <input type="number" id="age-to" v-model="group.ageTo" placeholder="To" />
-
-              <label for="breastfeeding">Breastfeeding Duration (days):</label>
-              <input type="number" id="breastfeeding-from" v-model="group.breastfeedingFrom" placeholder="From" />
-              <input type="number" id="breastfeeding-to" v-model="group.breastfeedingTo" placeholder="To" />
-
-              <label>
-                <input type="checkbox" v-model="group.includeUnknownBreastfeeding" />
-                including unknown breastfeeding duration samples
-              </label>
-            </form>
+              <el-form-item label="Age (days):">
+                <el-row :gutter="10">
+                  <el-col :span="11">
+                    <el-input-number v-model="group.ageFrom" placeholder="From" style="width: 100%" />
+                  </el-col>
+                  <el-col :span="2" class="text-center">-</el-col>
+                  <el-col :span="11">
+                    <el-input-number v-model="group.ageTo" placeholder="To" style="width: 100%" />
+                  </el-col>
+                </el-row>
+              </el-form-item>
+            </el-form>
           </div>
         </div>
         <el-button type="primary" @click="compareGroups">Compare</el-button>
 
         <!-- 图表展示区域 -->
         <div class="chart-area">
-          <h3>Abundance Differences Between the 2 Groups</h3>
+          <el-divider><h3>Abundance Differences Between the 2 Groups</h3></el-divider>
           <div class="venn-diagram">
             <!-- Venn Diagram 图表插件 -->
+            <el-empty description="Venn Diagram 插件占位符" />
           </div>
 
           <div class="bar-charts">
             <div class="chart-group">
-              <h4>Differential Genera in Group 1</h4>
+              <el-divider><h4>Differential Genera in Group 1</h4></el-divider>
               <!-- Bar Chart 插件 -->
+              <el-empty description="Bar Chart 插件占位符" />
             </div>
             <div class="chart-group">
-              <h4>Insignificantly Differential Genera</h4>
+              <el-divider><h4>Insignificantly Differential Genera</h4></el-divider>
               <!-- Bar Chart 插件 -->
+              <el-empty description="Bar Chart 插件占位符" />
             </div>
             <div class="chart-group">
-              <h4>Differential Genera in Group 2</h4>
+              <el-divider><h4>Differential Genera in Group 2</h4></el-divider>
               <!-- Bar Chart 插件 -->
+              <el-empty description="Bar Chart 插件占位符" />
             </div>
           </div>
         </div>
-      </div>
+      </el-card>
     </div>
   </div>
 </template>

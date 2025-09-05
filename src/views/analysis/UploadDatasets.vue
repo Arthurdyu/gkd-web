@@ -1,5 +1,5 @@
 <template>
-  <div class="search-contianer">search</div>
+  <div class="uoload-contianer">upload</div>
 </template>
 
 <script setup lang="ts"></script>

@@ -10,8 +10,9 @@
             multiple
             clearable
             filterable
+            allow-create
             collapse-tags
-            placeholder="请选择血清型"
+            :placeholder="$t('resource.select_serovar')"
             popper-class="custom-header"
             :max-collapse-tags="1"
             style="width: 200px"
@@ -22,19 +23,20 @@
             <el-option v-for="item in serovarOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
           <!-- 调试信息 -->
-          <div style="margin-left: 10px; font-size: 12px; color: #999999">选项数: {{ serovarOptions.length }}</div>
+          <!-- <div style="margin-left: 10px; font-size: 12px; color: #999999">选项数: {{ serovarOptions.length }}</div> -->
         </div>
 
         <!-- 宿主筛选 -->
         <div class="filter-item">
-          <label>{{ $t("resource.st") }}:</label>
+          <label>{{ $t("resource.host") }}:</label>
           <el-select
             v-model="mapFilters.host"
             multiple
             clearable
             filterable
+            allow-create
             collapse-tags
-            placeholder="请选择宿主"
+            :placeholder="$t('resource.select_host')"
             popper-class="custom-header"
             :max-collapse-tags="1"
             style="width: 200px"
@@ -47,7 +49,7 @@
             <el-option v-for="item in hostOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
           <!-- 调试信息 -->
-          <div style="margin-left: 10px; font-size: 12px; color: #999999">选项数: {{ hostOptions.length }}</div>
+          <!-- <div style="margin-left: 10px; font-size: 12px; color: #999999">选项数: {{ hostOptions.length }}</div> -->
         </div>
         <!-- 生境筛选 -->
         <div class="filter-item">
@@ -58,7 +60,7 @@
             clearable
             filterable
             collapse-tags
-            placeholder="请选择生境"
+            :placeholder="$t('resource.select_oneHealth')"
             popper-class="custom-header"
             :max-collapse-tags="1"
             style="width: 200px"
@@ -71,7 +73,7 @@
             <el-option v-for="item in oneHealthOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
           <!-- 调试信息 -->
-          <div style="margin-left: 10px; font-size: 12px; color: #999999">选项数: {{ oneHealthOptions.length }}</div>
+          <!-- <div style="margin-left: 10px; font-size: 12px; color: #999999">选项数: {{ oneHealthOptions.length }}</div> -->
         </div>
 
         <!-- 年份区间筛选 -->
@@ -91,8 +93,8 @@
 
         <!-- 重置按钮 -->
         <div class="filter-item">
-          <el-button type="primary" @click="getWorldmapData">筛选</el-button>
-          <el-button @click="resetMapFilters">重置筛选</el-button>
+          <el-button type="primary" @click="getWorldmapData">{{ $t("resource.map_filter") }}</el-button>
+          <el-button @click="resetMapFilters">{{ $t("resource.map_filter_reset") }}</el-button>
         </div>
       </div>
     </div>
@@ -133,6 +135,8 @@
         <div width="800px" height="600px" color="#ff0000">
           <el-table
             :data="filterTableData"
+            border
+            height="250"
             :default-sort="{ prop: 'strain', order: 'ascending' }"
             style="width: 100%; height: 600px; overflow: auto; white-space: nowrap"
           >
@@ -142,8 +146,13 @@
               <template #header>
                 <div style="display: flex; flex-direction: column; align-items: center; width: 100%; white-space: nowrap">
                   <!-- 第一行：span + 排序图标 -->
-                  <span>菌株</span>
-                  <el-input v-model="searchStrain" size="default" placeholder="搜索菌株" style="width: auto" />
+                  <span>{{ $t("resource.strain") }}</span>
+                  <el-input
+                    v-model="searchStrain"
+                    size="default"
+                    :placeholder="$t('resource.strain_select')"
+                    style="width: auto"
+                  />
                 </div>
               </template>
             </el-table-column>
@@ -159,15 +168,15 @@
             <el-table-column prop="serovar" label="血清型" sortable>
               <template #header>
                 <div style="display: flex; flex-direction: column; align-items: center">
-                  <span>血清型</span>
-                  <el-input v-model="searchSerovar" size="default" placeholder="搜索血清型" />
+                  <span>{{ $t("resource.serovar") }}</span>
+                  <el-input v-model="searchSerovar" size="default" :placeholder="$t('resource.select_serovar')" />
                 </div>
               </template>
             </el-table-column>
             <el-table-column prop="st" label="ST型" sortable>
               <template #header>
                 <div style="display: flex; flex-direction: column; align-items: center">
-                  <span>ST型</span>
+                  <span>{{ $t("resource.st") }}</span>
                   <el-input v-model="searchST" size="default" placeholder="" />
                 </div>
               </template>
@@ -175,7 +184,7 @@
             <el-table-column prop="isolationSource" label="分离来源" sortable>
               <template #header>
                 <div style="display: flex; flex-direction: column; align-items: center">
-                  <span>分离来源</span>
+                  <span>{{ $t("resource.isolation_source") }}</span>
                   <el-input v-model="searchIsolationSource" size="default" placeholder="" />
                 </div>
               </template>
@@ -183,7 +192,7 @@
             <el-table-column prop="host" label="宿主" sortable>
               <template #header>
                 <div style="display: flex; flex-direction: column; align-items: center">
-                  <span>宿主</span>
+                  <span>{{ $t("resource.host") }}</span>
                   <el-input v-model="searchHost" size="default" placeholder="" />
                 </div>
               </template>
@@ -191,7 +200,7 @@
             <el-table-column prop="collectionYear" label="采集年份" sortable>
               <template #header>
                 <div style="display: flex; flex-direction: column; align-items: center">
-                  <span>采集年份</span>
+                  <span>{{ $t("resource.year") }}</span>
                   <el-input v-model="searchCollectionYear" size="default" placeholder="" />
                 </div>
               </template>
@@ -199,7 +208,7 @@
             <el-table-column prop="country" label="国家" sortable>
               <template #header>
                 <div style="display: flex; flex-direction: column; align-items: center">
-                  <span>国家</span>
+                  <span>{{ $t("resource.country") }}</span>
                   <el-input v-model="searchCountry" size="default" placeholder="" />
                 </div>
               </template>
@@ -223,17 +232,17 @@
                 <el-input v-model="searchOneHealth3" size="default" placeholder="" />
               </template>
             </el-table-column>
-            <el-table-column prop="argNumber" label="耐药基因数" sortable>
+            <el-table-column prop="argNumber" :label="$t('ARG Number')" sortable>
               <!-- <template #header>
                 <el-input v-model="searchArgNumber" size="default" placeholder="搜索耐药基因数" />
               </template> -->
             </el-table-column>
-            <el-table-column prop="vfNumber" label="毒力基因数" sortable>
+            <el-table-column prop="vfNumber" :label="$t('VF Number')" sortable>
               <!-- <template #header>
                 <el-input v-model="searchVfNumber" size="default" placeholder="搜索毒力基因数" />
               </template> -->
             </el-table-column>
-            <el-table-column prop="invasive" label="侵袭指数" sortable>
+            <el-table-column prop="invasive" :label="$t('invasive')" sortable>
               <!-- <template #header>
                 <el-input v-model="searchInvasive" size="default" placeholder="搜索侵袭指数" />
               </template> -->
@@ -268,12 +277,15 @@ import {
   getWorldmapApi,
   getSequenceYearApi,
   getSerovarApi,
+  getHostApi,
   getSTApi,
   getSankeyApi
 } from "@/api/modules/resourcepage";
 import { ref, onMounted, onUnmounted, reactive, watch, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { Resource } from "@/api/interface/resourcepage";
+//import { totalmem } from "os";
+//import { time_d } from "echarts/types/dist/shared";
 
 const mapData = ref<Array<{ name: string; value: number }>>([]);
 
@@ -353,8 +365,9 @@ const getWorldmapData = async () => {
     // 转换数据格式以适配前端组件
     mapData.value = data.list.map(item => ({
       name: item.country,
-      value: item.number
-      //text: "country"
+      value: item.number,
+      text: "\n"
+      //text: "Country: " + item.country + "\nSequences: " + item.number
     }));
 
     // 获取前10个国家用于右侧显示
@@ -415,65 +428,28 @@ const resetMapFilters = () => {
 
 // 添加一个响应式变量来跟踪组件是否已挂载
 const isComponentMounted = ref(true);
-
 onUnmounted(() => {
   isComponentMounted.value = false;
 });
 
-// MetaList 获取宿主选项
+// 获取宿主选项
 const getHostOptions = async () => {
   try {
-    // 构造参数获取所有数据，设置一个更大的limit值
-    const params: any = {
-      curPage: 1,
-      limit: 100 // 增加limit以确保能获取所有46万条数据
-    };
-
-    console.log("开始获取宿主选项数据，参数:", params);
-    // 正确传递参数，将cancel配置作为第三个参数传递
-    const res: any = await getMetaListApi(params, {}, { cancel: false });
-    console.log("宿主选项API调用完成，响应数据:", res);
-
-    // 检查组件是否仍然挂载
-    if (!isComponentMounted.value) {
-      console.log("组件已卸载，停止处理宿主选项数据");
-      return; // 组件已卸载，不继续处理
-    }
+    // 直接调用getHostApi获取宿主选项，不再分页获取全部数据
+    const res: any = await getHostApi();
 
     // 处理宿主统计数据
     if (res && res.data && res.data.list) {
       // 获取所有宿主值
-      const hosts = new Set<string>();
-
-      res.data.list.forEach((item: any) => {
-        const host = item.host;
-        if (host) {
-          hosts.add(host);
-        }
-      });
-
-      // 更新宿主选项
-      hostOptions.value = Array.from(hosts).map(host => ({
-        label: host,
-        value: host
+      hostOptions.value = res.data.list.map((item: any) => ({
+        label: item.host,
+        value: item.host
       }));
       console.log("宿主选项数据处理完成，hostOptions:", hostOptions.value);
     } else {
       console.warn("宿主选项数据格式不正确或为空:", res);
     }
   } catch (error: any) {
-    // 检查组件是否仍然挂载
-    if (!isComponentMounted.value) {
-      console.log("组件已卸载，忽略宿主选项获取错误");
-      return;
-    }
-
-    // 检查是否是请求取消错误
-    if (error.name === "CanceledError" || error.code === "ERR_CANCELED") {
-      console.log("获取宿主选项请求被取消:", error.message);
-      return; // 请求被取消，正常现象，不需要处理
-    }
-
     console.error("获取宿主选项失败:", error);
     // 使用模拟数据作为备选
     hostOptions.value = [
@@ -488,57 +464,21 @@ const getHostOptions = async () => {
 // 获取血清型选项
 const getSerovarOptions = async () => {
   try {
-    // 构造参数获取所有数据，设置一个更大的limit值
-    const params: any = {
-      curPage: 1,
-      limit: 200000 // 增加limit以确保能获取所有46万条数据
-    };
-
-    console.log("开始获取血清型选项数据，参数:", params);
-    // 正确传递参数，将cancel配置作为第三个参数传递
-    const res: any = await getMetaListApi(params, {}, { cancel: false });
-    console.log("血清型选项API调用完成，响应数据:", res);
-
-    // 检查组件是否仍然挂载
-    if (!isComponentMounted.value) {
-      console.log("组件已卸载，停止处理血清型选项数据");
-      return; // 组件已卸载，不继续处理
-    }
+    // 直接调用getSerovarApi获取血清型选项，不再分页获取全部数据
+    const res: any = await getSerovarApi({ _t: Date.now() + "_serovarPie" });
 
     // 处理血清型统计数据
     if (res && res.data && res.data.list) {
       // 获取所有血清型值
-      const serovars = new Set<string>();
-
-      res.data.list.forEach((item: any) => {
-        const serovar = item.serovar;
-        if (serovar) {
-          serovars.add(serovar);
-        }
-      });
-
-      // 更新血清型选项
-      serovarOptions.value = Array.from(serovars).map(serovar => ({
-        label: serovar,
-        value: serovar
+      serovarOptions.value = res.data.list.map((item: any) => ({
+        label: item.serovar,
+        value: item.serovar
       }));
       console.log("血清型选项数据处理完成，serovarOptions:", serovarOptions.value);
     } else {
       console.warn("血清型选项数据格式不正确或为空:", res);
     }
   } catch (error: any) {
-    // 检查组件是否仍然挂载
-    if (!isComponentMounted.value) {
-      console.log("组件已卸载，忽略血清型选项获取错误");
-      return;
-    }
-
-    // 检查是否是请求取消错误
-    if (error.name === "CanceledError" || error.code === "ERR_CANCELED") {
-      console.log("获取血清型选项请求被取消:", error.message);
-      return; // 请求被取消，正常现象，不需要处理
-    }
-
     console.error("获取血清型选项失败:", error);
     // 使用模拟数据作为备选
     serovarOptions.value = [
@@ -562,7 +502,9 @@ const getOneHealthOptions = async () => {
 
     console.log("开始获取OneHealth选项数据，参数:", params);
     // 正确传递参数，将cancel配置作为第三个参数传递
-    const res: any = await getMetaListApi(params, {}, { cancel: false });
+    //const res: any = await getMetaListApi(params, {}, { cancel: false });
+    const res: any = await getMetaListApi({ ...params, _t: Date.now() + "_oneHealth" }, {}, { cancel: false }); // getHostOptions
+
     console.log("OneHealth选项API调用完成，响应数据:", res);
 
     // 检查组件是否仍然挂载
@@ -610,7 +552,8 @@ const getOneHealthOptions = async () => {
     oneHealthOptions.value = [
       { label: "Human", value: "Human" },
       { label: "Animal", value: "Animal" },
-      { label: "Environment", value: "Environment" }
+      { label: "Environment", value: "Environment" },
+      { label: "Food", value: "Food" }
     ];
     console.log("使用模拟数据作为OneHealth选项:", oneHealthOptions.value);
   }
@@ -720,8 +663,8 @@ const getSerovarPieData = async () => {
     });
     serovarPieOption.value = {
       title: {
-        //text: t("resource.serovar"),
-        text: "Serovar Pie Chart",
+        text: t("resource.serovar"),
+        //text: "Serovar Pie Chart",
         left: "center"
       },
       tooltip: {
@@ -820,13 +763,7 @@ const getSTPieData = async () => {
   }
 };
 
-// 示例ST饼图数据
-// const stPieData = ref([
-//   { name: "ST19", value: 300 },
-//   { name: "ST32", value: 200 },
-//   { name: "ST11", value: 200 }
-// ]);
-
+//桑基图数据格式化函数
 const formatSankeyData = (
   rawData: Resource.ResSankey
 ): { nodes: { name: string }[]; links: { source: string; target: string; value: number }[] } => {
@@ -1053,9 +990,8 @@ const getMetaList = async () => {
   }
 };
 
-// 添加防抖函数
+// 添加防抖函数，500ms后执行搜索
 let searchTimeout: number | null = null;
-
 const handleSearch = () => {
   if (searchTimeout) {
     clearTimeout(searchTimeout);
@@ -1120,24 +1056,25 @@ onMounted(() => {
 
 <style scoped lang="scss">
 @import "./index";
-.pagination-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-.filter-bar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  align-items: center;
-  padding: 15px 0;
-}
-.filter-item {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-.filter-item label {
-  white-space: nowrap;
-}
+
+// .pagination-container {
+//   display: flex;
+//   justify-content: center;
+//   margin-top: 20px;
+// }
+// .filter-bar {
+//   display: flex;
+//   flex-wrap: wrap;
+//   gap: 20px;
+//   align-items: center;
+//   padding: 15px 0;
+// }
+// .filter-item {
+//   display: flex;
+//   gap: 8px;
+//   align-items: center;
+// }
+// .filter-item label {
+//   white-space: nowrap;
+// }
 </style>
