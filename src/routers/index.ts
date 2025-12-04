@@ -10,7 +10,7 @@ const mode = import.meta.env.VITE_ROUTER_MODE;
 
 const routerMode = {
   hash: () => createWebHashHistory(),
-  history: () => createWebHistory()
+  history: () => createWebHistory("/salmonella")
 };
 
 /**
