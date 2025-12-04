@@ -69,7 +69,6 @@ export declare namespace Resource {
     curPage: number;
     limit: number;
   }
-
   // Meta 表格数据响应
   interface ResMetaList {
     currPage: number;
@@ -78,7 +77,6 @@ export declare namespace Resource {
     totalCount: number;
     totalPage: number;
   }
-
   // Meta 表格Item数据请求参数
   interface ReqMetaIem {
     strain?: string;
@@ -96,10 +94,11 @@ export declare namespace Resource {
     vfNumber?: null | string;
     invasive?: null | string;
     argList?: null | string;
+    plasmidNumber?: null | string;
+    plasmidList?: null | string;
     vfList?: null | string;
   }
-
-  // Meta 表格Item数据
+  // Meta Res表格Item数据
   interface ResMetaItem {
     strain?: string;
     subspecies?: null | string;
@@ -116,6 +115,8 @@ export declare namespace Resource {
     vfNumber?: null | string;
     invasive?: null | string;
     argList?: null | string;
+    plasmidNumber?: null | string;
+    plasmidList?: null | string;
     vfList?: null | string;
   }
 
@@ -129,6 +130,34 @@ export declare namespace Resource {
   interface ResSequenceYear {
     year: string; // 年份
     sequences_per_year: number; // 每年分离量
+  }
+
+  // ARG 熵值表格数据请求参数
+  interface ReqArgEntropyCountList {
+    curPage: number;
+    limit: number;
+  }
+  // ARG 熵值表格数据响应
+  interface ResArgEntropyCountList {
+    currPage: number;
+    list: ResArgEntropyCountItem[];
+    pageSize: number;
+    totalCount: number;
+    totalPage: number;
+  }
+  // ARG 熵值表格Item数据
+  interface ResArgEntropyCountItem {
+    arg: string; // ARG
+    argSerovarEntropy: number; // ARG Serovar Entropy
+    serovarNumber: number; // Serovar Number
+    totalSerovarNumber: number; // Total Serovar Number
+    serovarPrevalence: number; // Prevalence(%)
+    countryEntropy: number; // Country Entropy
+    countryNumber: number; // Country Number
+    totalCountryNumber: number; // Total Country Number
+    countryPrevalence: number; // Prevalence(%)
+    nicheEntropy: number; // Niche Entropy
+    nicheNumber: number; // Niche Number
   }
 
   // 通用API响应类型

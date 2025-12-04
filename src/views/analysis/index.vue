@@ -5,7 +5,9 @@
       <ul>
         <li v-for="(item, index) in navItems" :key="index" @click="selectItem(index)" :class="{ active: activeIndex === index }">
           <el-card :class="{ 'active-card': activeIndex === index }">
-            <i :class="item.icon"></i>
+            <img v-if="!item.icon.startsWith('fa')" :src="item.icon" class="local-icon" />
+            <!-- Font Awesome用i标签 -->
+            <i v-else :class="item.icon" class="font-icon"></i>
             <span>{{ item.label }}</span>
           </el-card>
         </li>
@@ -23,28 +25,22 @@
 import { ref, computed } from "vue";
 
 //  导入同目录下的页面组件
-import BasicChart from "./BasicChart.vue";
+import BasicDraw from "./BasicDraw.vue";
 import UploadDatasets from "./UploadDatasets.vue";
 import GenoTrace from "./GenoTrace.vue";
 import RiskAnalysis from "./RiskAnalysis.vue";
 
-// declare module "*.vue" {
-//   import { DefineComponent } from "vue";
-//   const component: DefineComponent<{}, {}, any>;
-//   export default component;
-// }
-
 interface NavItem {
-  label: string;
   icon: string;
+  label: string;
 }
 
 //  导航数据
 const navItems = ref<NavItem[]>([
-  { label: "Basic Chart", icon: "fas fa-chart-bar" },
-  { label: "Upload Datasets", icon: "fas fa-upload" },
-  { label: "GenoTrace", icon: "fas fa-dna" },
-  { label: "Risk Analysis", icon: "fas fa-exclamation-triangle" }
+  { label: "Basic Chart", icon: "src/assets/images/icon/BasicChart.svg" },
+  { label: "Upload Datasets", icon: "src/assets/images/icon/Upload.svg" },
+  { label: "GenoTrace", icon: "src/assets/images/icon/GenoTrace.svg" },
+  { label: "Risk Analysis", icon: "src/assets/images/icon/RiskAnalysis.svg" }
 ]);
 
 //  当前激活索引
@@ -56,11 +52,11 @@ const selectItem = (index: number) => {
 };
 
 //  动态组件列表
-const components = [BasicChart, UploadDatasets, GenoTrace, RiskAnalysis] as const;
+const components = [BasicDraw, UploadDatasets, GenoTrace, RiskAnalysis] as const;
 
 //  计算当前应显示的组件
 const currentComponent = computed(() => {
-  return components[activeIndex.value] || BasicChart;
+  return components[activeIndex.value] || BasicDraw;
 });
 </script>
 

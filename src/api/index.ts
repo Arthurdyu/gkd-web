@@ -9,6 +9,7 @@ import router from "@/routers";
 export interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   loading?: boolean;
   cancel?: boolean;
+  export?: boolean; // 新增，支持导出请求标记
 }
 
 const config = {

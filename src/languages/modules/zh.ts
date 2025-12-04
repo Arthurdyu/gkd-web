@@ -10,6 +10,7 @@ export default {
     onehealth_sunburst: "旭日图"
   },
   resource: {
+    table_index: "序号",
     strain: "编号",
     strain_select: "搜索序列",
     serovar: "血清型",
@@ -19,8 +20,12 @@ export default {
     isolation_source: "分离来源",
     host: "宿主",
     oneHealth: "One Health(生境)",
-    arg_number: "耐药基因数",
-    vf_number: "毒力因子数",
+    oneHealth2: "生境（二级）",
+    oneHealth3: "生境（三级）",
+    arg_number: "耐药基因数量",
+    arg_list: "耐药基因",
+    plasmid_list: "质粒复制子",
+    vf_number: "毒力因子数量",
     invasive: "侵袭指数",
     sequenceYearperYear_title: "沙门菌测序量",
     serovarPie_title: "血清型 (Top 10)",
@@ -30,6 +35,7 @@ export default {
     select_host: "请选择宿主",
     map_filter: "筛选",
     map_filter_reset: "重置",
+    export_selected: "导出",
     serovarStSankey_title: "血清型-ST型对应关系"
   }
 };

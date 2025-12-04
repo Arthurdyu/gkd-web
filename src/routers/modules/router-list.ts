@@ -46,7 +46,7 @@ export const allRouter = [
   },
   {
     path: "/search",
-    name: "Search",
+    name: "Search", // 搜索
     component: "/search/index",
     meta: {
       title: "menu.search",

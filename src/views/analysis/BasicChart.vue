@@ -25,7 +25,7 @@
       <el-card id="database-data" class="middle-panel">
         <template #header>
           <div class="card-header">
-            <span>Database Data versus Database Data (infant gut microbiome)</span>
+            <span>Database Data </span>
           </div>
         </template>
         <div class="group-forms">
@@ -42,25 +42,20 @@
                 </el-select>
               </el-form-item>
 
-              <el-form-item label="Gender:">
-                <el-select v-model="group.gender" placeholder="Select a gender" clearable style="width: 100%">
-                  <el-option value="Male" label="Male" />
-                  <el-option value="Female" label="Female" />
-                  <el-option value="Unknown" label="Unknown" />
+              <el-form-item label="Serovar:">
+                <el-select v-model="group.serovar" placeholder="Select a Serovar" clearable style="width: 100%">
+                  <el-option value="All" label="All" />
+                  <el-option value="Typhimurium" label="Typhimurium" />
+                  <el-option value="Enteritidis" label="Enteritidis" />
                 </el-select>
               </el-form-item>
 
-              <el-form-item label="Age (days):">
-                <el-row :gutter="10">
-                  <el-col :span="11">
-                    <el-input-number v-model="group.ageFrom" placeholder="From" style="width: 100%" />
-                  </el-col>
-                  <el-col :span="2" class="text-center">-</el-col>
-                  <el-col :span="11">
-                    <el-input-number v-model="group.ageTo" placeholder="To" style="width: 100%" />
-                  </el-col>
-                </el-row>
-              </el-form-item>
+              <el-form-item label="One Health:"></el-form-item>
+              <el-select v-model="group.oneHealth" placeholder="Select delivery mode" clearable style="width: 100%">
+                <el-option value="Vaginal" label="Vaginal" />
+                <el-option value="C-Section" label="C-Section" />
+                <el-option value="Unknown" label="Unknown" />
+              </el-select>
             </el-form>
           </div>
         </div>
@@ -68,29 +63,35 @@
 
         <!-- 图表展示区域 -->
         <div class="chart-area">
-          <el-divider><h3>Abundance Differences Between the 2 Groups</h3></el-divider>
-          <div class="venn-diagram">
-            <!-- Venn Diagram 图表插件 -->
-            <el-empty description="Venn Diagram 插件占位符" />
-          </div>
-
-          <div class="bar-charts">
-            <div class="chart-group">
-              <el-divider><h4>Differential Genera in Group 1</h4></el-divider>
-              <!-- Bar Chart 插件 -->
-              <el-empty description="Bar Chart 插件占位符" />
-            </div>
-            <div class="chart-group">
-              <el-divider><h4>Insignificantly Differential Genera</h4></el-divider>
-              <!-- Bar Chart 插件 -->
-              <el-empty description="Bar Chart 插件占位符" />
-            </div>
-            <div class="chart-group">
-              <el-divider><h4>Differential Genera in Group 2</h4></el-divider>
-              <!-- Bar Chart 插件 -->
-              <el-empty description="Bar Chart 插件占位符" />
-            </div>
-          </div>
+          <!-- 选项卡组件 -->
+          <el-tabs v-model="activeTab" class="tabs">
+            <el-tab-pane label="Abundance" name="abundance">
+              <p>Abundance 相关内容（可替换为对应图表等）</p>
+            </el-tab-pane>
+            <el-tab-pane label="Prevalence" name="prevalence">
+              <!-- 布局行，用于并列展示两个图表 -->
+              <el-row :gutter="20">
+                <el-col :span="12">
+                  <div ref="group1Chart" class="chart-container"></div>
+                </el-col>
+                <el-col :span="12">
+                  <div ref="group2Chart" class="chart-container"></div>
+                </el-col>
+              </el-row>
+            </el-tab-pane>
+            <el-tab-pane label="Diversity" name="diversity">
+              <p>Diversity 相关内容</p>
+            </el-tab-pane>
+            <el-tab-pane label="Network" name="network">
+              <p>Network 相关内容</p>
+            </el-tab-pane>
+            <el-tab-pane label="Biomarker" name="biomarker">
+              <p>Biomarker 相关内容</p>
+            </el-tab-pane>
+            <el-tab-pane label="Function" name="function">
+              <p>Function 相关内容</p>
+            </el-tab-pane>
+          </el-tabs>
         </div>
       </el-card>
     </div>
@@ -99,45 +100,32 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+//import VennChart from "@/components/vennChart.vue";
+//import EchartsVenn from "@/components/EchartVeen.vue";
 
 // 定义每个组的数据结构
 interface Group {
   country: string;
-  gender: string;
-  delivery: string;
-  gestation: string;
-  ageFrom: number;
-  ageTo: number;
-  breastfeedingFrom: number;
-  breastfeedingTo: number;
-  includeUnknownBreastfeeding: boolean;
+  serovar?: string;
+  oneHealth?: string;
 }
 
 // 初始化两个组的数据
 const groups = ref<Group[]>([
   {
     country: "",
-    gender: "",
-    delivery: "",
-    gestation: "",
-    ageFrom: 0,
-    ageTo: 100,
-    breastfeedingFrom: 0,
-    breastfeedingTo: 180,
-    includeUnknownBreastfeeding: false
+    serovar: "",
+    oneHealth: ""
   },
   {
     country: "",
-    gender: "",
-    delivery: "",
-    gestation: "",
-    ageFrom: 100,
-    ageTo: 200,
-    breastfeedingFrom: 0,
-    breastfeedingTo: 180,
-    includeUnknownBreastfeeding: false
+    serovar: "",
+    oneHealth: ""
   }
 ]);
+
+// 选项卡活动状态
+const activeTab = ref("abundance"); // 默认选中 "abundance" 选项卡
 
 // 处理比较按钮点击事件
 const compareGroups = () => {

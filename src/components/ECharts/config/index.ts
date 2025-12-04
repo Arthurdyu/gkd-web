@@ -12,6 +12,7 @@ import {
   SunburstChart, // 导入旭日图组件
   TreemapChart,
   SankeyChart // 导入桑基图组件
+  //VennChart // 导入维恩图组件
 } from "echarts/charts";
 import {
   TitleComponent,
@@ -102,6 +103,7 @@ echarts.use([
   CanvasRenderer,
   SunburstChart, // 导入旭日图组件
   SankeyChart // 导入桑基图组件
+  //VennChart
 ]);
 
 export default echarts;

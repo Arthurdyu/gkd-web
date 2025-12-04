@@ -22,8 +22,6 @@
             </template>
             <el-option v-for="item in serovarOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
-          <!-- 调试信息 -->
-          <!-- <div style="margin-left: 10px; font-size: 12px; color: #999999">选项数: {{ serovarOptions.length }}</div> -->
         </div>
 
         <!-- 宿主筛选 -->
@@ -106,7 +104,7 @@
           <div v-for="(country, index) in topCountries" :key="index" class="country-item">
             <span class="country-name">{{ country.name }}</span>
             <div class="bar" :style="{ width: getBarWidth(country.value) }"></div>
-            <span class="country-value">{{ country.value }}</span>
+            <span class="country-value">{{ formatNumber(country.value) }}</span>
           </div>
         </div>
       </div>
@@ -129,138 +127,27 @@
     </div>
 
     <!-- 表格,显示基因组的详细信息-->
-    <div class="resource-table-container">
-      <!-- 搜索 表头-->
-      <el-card>
-        <div width="800px" height="600px" color="#ff0000">
-          <el-table
-            :data="filterTableData"
-            border
-            height="250"
-            :default-sort="{ prop: 'strain', order: 'ascending' }"
-            style="width: 100%; height: 600px; overflow: auto; white-space: nowrap"
-          >
-            <el-table-column type="index" label="序号" />
-
-            <el-table-column prop="strain" label="菌株" sortable>
-              <template #header>
-                <div style="display: flex; flex-direction: column; align-items: center; width: 100%; white-space: nowrap">
-                  <!-- 第一行：span + 排序图标 -->
-                  <span>{{ $t("resource.strain") }}</span>
-                  <el-input
-                    v-model="searchStrain"
-                    size="default"
-                    :placeholder="$t('resource.strain_select')"
-                    style="width: auto"
-                  />
-                </div>
-              </template>
-            </el-table-column>
-
-            <!-- <el-table-column prop="subspecies" label="亚种" sortable>
-              <template #header>
-                <div style="display: flex; flex-direction: column">
-                  <span>亚种</span>
-                  <el-input v-model="searchSubspecies" size="default" placeholder="" />
-                </div>
-              </template>
-            </el-table-column> -->
-            <el-table-column prop="serovar" label="血清型" sortable>
-              <template #header>
-                <div style="display: flex; flex-direction: column; align-items: center">
-                  <span>{{ $t("resource.serovar") }}</span>
-                  <el-input v-model="searchSerovar" size="default" :placeholder="$t('resource.select_serovar')" />
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="st" label="ST型" sortable>
-              <template #header>
-                <div style="display: flex; flex-direction: column; align-items: center">
-                  <span>{{ $t("resource.st") }}</span>
-                  <el-input v-model="searchST" size="default" placeholder="" />
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="isolationSource" label="分离来源" sortable>
-              <template #header>
-                <div style="display: flex; flex-direction: column; align-items: center">
-                  <span>{{ $t("resource.isolation_source") }}</span>
-                  <el-input v-model="searchIsolationSource" size="default" placeholder="" />
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="host" label="宿主" sortable>
-              <template #header>
-                <div style="display: flex; flex-direction: column; align-items: center">
-                  <span>{{ $t("resource.host") }}</span>
-                  <el-input v-model="searchHost" size="default" placeholder="" />
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="collectionYear" label="采集年份" sortable>
-              <template #header>
-                <div style="display: flex; flex-direction: column; align-items: center">
-                  <span>{{ $t("resource.year") }}</span>
-                  <el-input v-model="searchCollectionYear" size="default" placeholder="" />
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="country" label="国家" sortable>
-              <template #header>
-                <div style="display: flex; flex-direction: column; align-items: center">
-                  <span>{{ $t("resource.country") }}</span>
-                  <el-input v-model="searchCountry" size="default" placeholder="" />
-                </div>
-              </template>
-            </el-table-column>
-
-            <el-table-column prop="oneHealth" label="OneHealth" sortable>
-              <template #header>
-                <span>OneHealth</span>
-                <el-input v-model="searchOneHealth" size="default" placeholder="" />
-              </template>
-            </el-table-column>
-            <el-table-column prop="onehealth2" label="OneHealth2" sortable>
-              <template #header>
-                <span>OneHealth2</span>
-                <el-input v-model="searchOneHealth2" size="default" placeholder="" />
-              </template>
-            </el-table-column>
-            <el-table-column prop="oneHealth3" label="OneHealth3" sortable>
-              <template #header>
-                <span>OneHealth3</span>
-                <el-input v-model="searchOneHealth3" size="default" placeholder="" />
-              </template>
-            </el-table-column>
-            <el-table-column prop="argNumber" :label="$t('ARG Number')" sortable>
-              <!-- <template #header>
-                <el-input v-model="searchArgNumber" size="default" placeholder="搜索耐药基因数" />
-              </template> -->
-            </el-table-column>
-            <el-table-column prop="vfNumber" :label="$t('VF Number')" sortable>
-              <!-- <template #header>
-                <el-input v-model="searchVfNumber" size="default" placeholder="搜索毒力基因数" />
-              </template> -->
-            </el-table-column>
-            <el-table-column prop="invasive" :label="$t('invasive')" sortable>
-              <!-- <template #header>
-                <el-input v-model="searchInvasive" size="default" placeholder="搜索侵袭指数" />
-              </template> -->
-            </el-table-column>
-          </el-table>
-        </div>
-
-        <el-pagination
-          v-model:current-page="pagination.currentPage"
-          v-model:page-size="pagination.pageSize"
-          :page-sizes="[10, 20, 50, 100]"
-          :total="pagination.total"
-          layout="total, sizes, prev, pager, next, jumper"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          class="pagination-container"
+    <div class="resource-table-metadata-container" style="margin: 20px">
+      <div class="table-wrapper">
+        <ResourceTable
+          :table-data="metaTableData"
+          :columns="metaTableColumnsWithSearch"
+          title="| Metadata Table"
+          :default-col-min-width="60"
+          :default-col-max-width="300"
+          :pagination="pagination"
+          :height="600"
+          :table-style="{ minWidth: '100px' }"
+          :default-sortable="true"
+          :fetch-all-data-function="fetchAllMetaListData"
+          :selected-all-pages-data="allMetaSelectedData"
+          row-key="id"
+          @selection-change="handleSelectionChange"
+          @sort-change="handleMetaSortChange"
+          @search="handleMetaSearch"
+          @update:selected-all-pages-data="(data: any[]) => (allMetaSelectedData = data)"
         />
-      </el-card>
+      </div>
     </div>
   </div>
 </template>
@@ -268,9 +155,7 @@
 <script setup lang="ts">
 import MapECharts from "@/components/MapECharts/worldMap.vue";
 import ECharts from "@/components/ECharts/index.vue";
-//import SerovarPieChart from "@/components/ECharts/serovarPie.vue";
-//import STPieChart from "@/components/ECharts/stPie.vue";
-//import SerovarSTSankeyChart from "@/components/ECharts/serovarSTSankey.vue";
+import ResourceTable from "@/components/ResourceTable.vue";
 
 import {
   getMetaListApi,
@@ -281,11 +166,10 @@ import {
   getSTApi,
   getSankeyApi
 } from "@/api/modules/resourcepage";
-import { ref, onMounted, onUnmounted, reactive, watch, computed } from "vue";
+import { ref, onMounted, reactive, watch, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { Resource } from "@/api/interface/resourcepage";
-//import { totalmem } from "os";
-//import { time_d } from "echarts/types/dist/shared";
+import { formatNumber } from "@/utils/format";
 
 const mapData = ref<Array<{ name: string; value: number }>>([]);
 
@@ -308,6 +192,9 @@ const sankeyOption = ref<any>({});
 const { t } = useI18n();
 const topCountries = ref<Array<{ name: string; value: number }>>([]);
 const metaTableData = ref<any[]>([]);
+// 表格选中行数据
+const selectedRows = ref<any[]>([]);
+const allMetaSelectedData: any[] = [];
 
 // 添加全选功能相关变量
 const checkAll = ref(false);
@@ -336,22 +223,6 @@ const getBarWidth = (value: number): string => {
   //console.log("Bar width for value", value, ":", width);
   return `${Math.max(width, 5)}px`; // 最小宽度为5px
 };
-
-// 定义计算bar宽度的函数，基于绝对值等比例
-// const getBarWidth = (value: number): string => {
-//   if (topCountries.value.length === 0) return "0px";
-
-//   // 获取最大值用于比例计算
-//   const maxValue = Math.max(...topCountries.value.map(item => item.value));
-
-//   // 设置最大宽度
-//   const maxWidth = 300;
-
-//   // 按绝对值比例计算宽度
-//   const width = (value / maxValue) * maxWidth;
-//   console.log("Bar width for value", value, ":", width);
-//   return `${Math.max(width, 5)}px`; // 最小宽度为5px
-// };
 
 const getWorldmapData = async () => {
   try {
@@ -428,9 +299,6 @@ const resetMapFilters = () => {
 
 // 添加一个响应式变量来跟踪组件是否已挂载
 const isComponentMounted = ref(true);
-onUnmounted(() => {
-  isComponentMounted.value = false;
-});
 
 // 获取宿主选项
 const getHostOptions = async () => {
@@ -451,13 +319,6 @@ const getHostOptions = async () => {
     }
   } catch (error: any) {
     console.error("获取宿主选项失败:", error);
-    // 使用模拟数据作为备选
-    hostOptions.value = [
-      { label: "人类", value: "Human" },
-      { label: "猪", value: "Pig" },
-      { label: "牛", value: "Cattle" }
-    ];
-    console.log("使用模拟数据作为宿主选项:", hostOptions.value);
   }
 };
 
@@ -826,6 +687,13 @@ const getSankeyData = async () => {
   }
 };
 
+// 处理表格选择变化
+const handleSelectionChange = (selection: any[]) => {
+  selectedRows.value = selection;
+};
+
+// 导出选中数据
+
 // 监听血清型筛选值的变化，更新全选状态
 watch(
   () => mapFilters.serovar,
@@ -874,56 +742,69 @@ watch(
   }
 );
 
-// 表格搜索条件
-const searchStrain = ref("");
-const searchSerovar = ref("");
-const searchSubspecies = ref("");
-const searchST = ref("");
-const searchIsolationSource = ref("");
-const searchHost = ref("");
-const searchCollectionYear = ref("");
-const searchCountry = ref("");
-const searchOneHealth = ref("");
-const searchOneHealth2 = ref("");
-const searchOneHealth3 = ref("");
-const searchArgNumber = ref("");
-const searchVfNumber = ref("");
-const searchInvasive = ref("");
-
-// 计算过滤后的表格数据
-const filterTableData = computed(() => {
-  return metaTableData.value.filter(data => {
-    return (
-      (!searchStrain.value || (data.strain && data.strain.toLowerCase().includes(searchStrain.value.toLowerCase()))) &&
-      (!searchSubspecies.value ||
-        (data.subspecies && data.subspecies.toLowerCase().includes(searchSubspecies.value.toLowerCase()))) &&
-      (!searchSerovar.value || (data.serovar && data.serovar.toLowerCase().includes(searchSerovar.value.toLowerCase()))) &&
-      (!searchST.value || (data.st && data.st.toLowerCase().includes(searchST.value.toLowerCase()))) &&
-      (!searchIsolationSource.value ||
-        (data.isolationSource && data.isolationSource.toLowerCase().includes(searchIsolationSource.value.toLowerCase()))) &&
-      (!searchHost.value || (data.host && data.host.toLowerCase().includes(searchHost.value.toLowerCase()))) &&
-      (!searchCollectionYear.value ||
-        (data.collectionYear && data.collectionYear.toString().includes(searchCollectionYear.value))) &&
-      (!searchCountry.value || (data.country && data.country.toLowerCase().includes(searchCountry.value.toLowerCase()))) &&
-      (!searchOneHealth.value ||
-        (data.oneHealth && data.oneHealth.toLowerCase().includes(searchOneHealth.value.toLowerCase()))) &&
-      (!searchOneHealth2.value ||
-        (data.onehealth2 && data.onehealth2.toLowerCase().includes(searchOneHealth2.value.toLowerCase()))) &&
-      (!searchOneHealth3.value ||
-        (data.oneHealth3 && data.oneHealth3.toLowerCase().includes(searchOneHealth3.value.toLowerCase()))) &&
-      (!searchArgNumber.value || (data.argNumber && data.argNumber.toString().includes(searchArgNumber.value))) &&
-      (!searchVfNumber.value || (data.vfNumber && data.vfNumber.toString().includes(searchVfNumber.value))) &&
-      (!searchInvasive.value || (data.invasive && data.invasive.toString().includes(searchInvasive.value)))
-    );
-  });
-});
-
 // 分页相关数据
 const pagination = reactive({
   currentPage: 1, //加载页面时设置当前为第一页
   pageSize: 10, //每页显示的记录数
-  total: 0
+  total: 0,
+  pageSizes: [10, 20, 50],
+  onSizeChange: (val: number) => {
+    pagination.pageSize = val;
+    getMetaList();
+  },
+  onCurrentChange: (val: number) => {
+    console.log("切换到:", val, "页");
+    pagination.currentPage = val;
+    getMetaList();
+  }
 });
+
+// 搜索过滤器
+const metaSearchFilters = reactive<Record<string, string>>({});
+
+// 表格列定义（带搜索功能）
+const metaTableColumns = ref([
+  { type: "selection" },
+  { type: "index", label: t("resource.table_index"), width: 65 },
+  { prop: "strain", label: t("resource.strain"), minWidth: 120, searchable: true, sortable: true },
+  { prop: "serovar", label: t("resource.serovar"), minWidth: 120, searchable: true, sortable: true },
+  { prop: "st", label: t("resource.st"), minWidth: 120, searchable: true, sortable: true },
+  { prop: "isolationSource", label: t("resource.isolation_source"), minWidth: 180, searchable: true, sortable: true },
+  { prop: "host", label: t("resource.host"), minWidth: 120, searchable: true, sortable: true },
+  { prop: "collectionYear", label: t("resource.year"), minWidth: 180, searchable: true, sortable: true },
+  { prop: "country", label: t("resource.country"), minWidth: 120, searchable: true, sortable: true },
+  { prop: "oneHealth", label: t("resource.oneHealth"), minWidth: 180, searchable: true, sortable: true },
+  { prop: "oneHealth2", label: t("resource.oneHealth2"), minWidth: 180, searchable: true, sortable: true },
+  { prop: "oneHealth3", label: t("resource.oneHealth3"), minWidth: 180, searchable: true, sortable: true },
+  { prop: "argNumber", label: t("resource.arg_number"), minWidth: 180, searchable: true, sortable: true },
+  { prop: "argList", label: t("resource.arg_list"), minWidth: 180, searchable: true, sortable: true },
+  //{ prop: "plasmidNumber", label: t("resource.plasmid_number"), minWidth: 120, searchable: true, sortable: true },
+  { prop: "plasmidList", label: t("resource.plasmid_list"), minWidth: 180, searchable: true, sortable: true },
+  { prop: "vfNumber", label: t("resource.vf_number"), minWidth: 180, searchable: true, sortable: true },
+  { prop: "invasive", label: t("resource.invasive"), minWidth: 120, searchable: true, sortable: true }
+]);
+
+// 带搜索功能的列定义
+const metaTableColumnsWithSearch = computed(() => {
+  return metaTableColumns.value.map(col => {
+    if (col.searchable) {
+      return {
+        ...col,
+        searchValue: metaSearchFilters[col.prop] || ""
+      };
+    }
+    return col;
+  });
+});
+
+// 排序参数
+const metaSortParams = reactive({
+  sidx: "",
+  order: ""
+});
+
+// 搜索防抖定时器
+const searchDebounceTimers = ref<{ [key: string]: NodeJS.Timeout }>({});
 
 // 修改 getMetaList 方法，添加搜索参数
 const getMetaList = async () => {
@@ -931,24 +812,19 @@ const getMetaList = async () => {
     // 构造参数，包括分页和搜索条件
     const params: any = {
       curPage: pagination.currentPage,
-      limit: pagination.pageSize
+      limit: pagination.pageSize,
+      sidx: metaSortParams.sidx,
+      order: metaSortParams.order
     };
 
-    // 添加搜索条件
-    if (searchStrain.value) params.strain = searchStrain.value;
-    if (searchSubspecies.value) params.subspecies = searchSubspecies.value;
-    if (searchSerovar.value) params.serovar = searchSerovar.value;
-    if (searchST.value) params.st = searchST.value;
-    if (searchIsolationSource.value) params.isolationSource = searchIsolationSource.value;
-    if (searchHost.value) params.host = searchHost.value;
-    if (searchCollectionYear.value) params.collectionYear = searchCollectionYear.value;
-    if (searchCountry.value) params.country = searchCountry.value;
-    if (searchOneHealth.value) params.oneHealth = searchOneHealth.value;
-    if (searchOneHealth2.value) params.onehealth2 = searchOneHealth2.value;
-    if (searchOneHealth3.value) params.oneHealth3 = searchOneHealth3.value;
-    if (searchArgNumber.value) params.argNumber = searchArgNumber.value;
-    if (searchVfNumber.value) params.vfNumber = searchVfNumber.value;
-    if (searchInvasive.value) params.invasive = searchInvasive.value;
+    // 添加列搜索条件
+    Object.keys(metaSearchFilters).forEach(key => {
+      if (metaSearchFilters[key]) {
+        params[key] = metaSearchFilters[key];
+      }
+    });
+
+    console.log("Search metatable:Sending request with params:", params);
 
     // 正确传递参数，将cancel配置作为第三个参数传递
     const res: any = await getMetaListApi(params);
@@ -956,6 +832,7 @@ const getMetaList = async () => {
     // 字段名映射
     const transformMetaItem = (item: any) => {
       return {
+        id: item.strain, // 使用strain作为唯一标识符
         strain: item.strain,
         subspecies: item.subspecies1 || item.subspecies2 || "", // 后端字段名不同
         serovar: item.serovar,
@@ -965,9 +842,12 @@ const getMetaList = async () => {
         collectionYear: item.collectionYear,
         country: item.country,
         oneHealth: item.oneHealth,
-        onehealth2: item.oneHealthSecondary,
+        oneHealth2: item.oneHealthSecondary,
         oneHealth3: item.oneHealthTertiary,
         argNumber: item.argNumber,
+        argList: item.argList,
+        plasmidNumber: item.plasmidNumber,
+        plasmidList: item.plasmidList,
         vfNumber: item.vfNumber,
         invasive: item.invasiveIndex
       };
@@ -990,52 +870,103 @@ const getMetaList = async () => {
   }
 };
 
-// 添加防抖函数，500ms后执行搜索
-let searchTimeout: number | null = null;
-const handleSearch = () => {
-  if (searchTimeout) {
-    clearTimeout(searchTimeout);
+// 获取所有Meta数据（用于导出）
+const fetchAllMetaListData = async (extraParams = {}) => {
+  try {
+    const params: any = {
+      curPage: 1,
+      limit: 10000, // 设置一个足够大的数字以获取所有数据
+      sidx: metaSortParams.sidx,
+      order: metaSortParams.order,
+      ...extraParams
+    };
+
+    // 添加列搜索条件
+    Object.keys(metaSearchFilters).forEach(key => {
+      if (metaSearchFilters[key]) {
+        params[key] = metaSearchFilters[key];
+      }
+    });
+    console.log("MetaTable API request params:", { ...params });
+
+    const res: any = await getMetaListApi(params);
+
+    // 字段名映射
+    const transformMetaItem = (item: any) => {
+      return {
+        id: item.strain, // 使用strain作为唯一标识符
+        strain: item.strain,
+        subspecies: item.subspecies1 || item.subspecies2 || "", // 后端字段名不同
+        serovar: item.serovar,
+        st: item.st,
+        isolationSource: item.isolationSource,
+        host: item.host,
+        collectionYear: item.collectionYear,
+        country: item.country,
+        oneHealth: item.oneHealth,
+        oneHealth2: item.oneHealthSecondary,
+        oneHealth3: item.oneHealthTertiary,
+        argNumber: item.argNumber,
+        argList: item.argList,
+        plasmidNumber: item.plasmidNumber,
+        plasmidList: item.plasmidList,
+        vfNumber: item.vfNumber,
+        invasive: item.invasiveIndex
+      };
+    };
+
+    // 根据实际返回的数据结构调整访问路径
+    if (res && res.data) {
+      // 转换数据格式以适配前端组件
+      return (res.data.list || []).map(transformMetaItem);
+    }
+    return [];
+  } catch (error) {
+    console.error("获取所有Meta数据失败:", error);
+    throw error;
   }
-  searchTimeout = setTimeout(() => {
-    pagination.currentPage = 1; // 重置到第一页
+};
+
+const handleMetaSortChange = (sortInfo: { column: any; prop: string; order: string }) => {
+  if (sortInfo.order) {
+    metaSortParams.sidx = sortInfo.prop;
+    metaSortParams.order = sortInfo.order === "ascending" ? "asc" : "desc";
+  } else {
+    metaSortParams.sidx = "";
+    metaSortParams.order = "";
+  }
+  getMetaList();
+};
+
+const handleMetaSearch = (prop: string, value?: string) => {
+  // 清除之前的定时器
+  if (searchDebounceTimers.value[prop]) {
+    clearTimeout(searchDebounceTimers.value[prop]);
+  }
+
+  // 设置新的防抖定时器
+  searchDebounceTimers.value[prop] = setTimeout(() => {
+    // 如果提供了value参数，则直接使用它更新搜索过滤器
+    if (value !== undefined) {
+      console.log("Received search value from input event:", prop, value);
+      metaSearchFilters[prop] = value;
+    } else {
+      // 否则，从ResourceTable组件获取搜索值并更新过滤器
+      const column = metaTableColumnsWithSearch.value.find(col => col.prop === prop && col.searchable);
+      if (column && column.searchable && typeof (column as any).searchValue === "string") {
+        console.log("Retrieved search value from column config:", prop, (column as any).searchValue);
+        metaSearchFilters[prop] = (column as any).searchValue;
+      }
+    }
+
+    console.log("Updated metaSearchFilters:", { ...metaSearchFilters });
+
+    // 重置分页到第一页
+    pagination.currentPage = 1;
+
+    // 触发数据重新获取
     getMetaList();
-  }, 500) as unknown as number;
-};
-
-// 监听所有搜索输入框的变化
-watch(
-  [
-    searchStrain,
-    searchSubspecies,
-    searchSerovar,
-    searchST,
-    searchIsolationSource,
-    searchHost,
-    searchCollectionYear,
-    searchCountry,
-    searchOneHealth,
-    searchOneHealth2,
-    searchOneHealth3,
-    searchArgNumber,
-    searchVfNumber,
-    searchInvasive
-  ],
-  () => {
-    handleSearch();
-  }
-);
-
-// 修改分页处理函数
-const handleCurrentChange = (val: number) => {
-  console.log("切换到:", val, "页");
-  pagination.currentPage = val;
-  getMetaList(); // 重新获取数据
-};
-
-const handleSizeChange = (val: number) => {
-  pagination.pageSize = val;
-  pagination.currentPage = 1; // 重置到第一页
-  getMetaList(); // 重新获取数据
+  }, 300); // 300ms 防抖延迟
 };
 
 onMounted(() => {
@@ -1050,31 +981,11 @@ onMounted(() => {
   getOneHealthOptions(); // 添加OneHealth选项获取
   getSTPieData();
   getSankeyData();
+
   console.log("Resource组件数据加载方法已调用");
 });
 </script>
 
 <style scoped lang="scss">
 @import "./index";
-
-// .pagination-container {
-//   display: flex;
-//   justify-content: center;
-//   margin-top: 20px;
-// }
-// .filter-bar {
-//   display: flex;
-//   flex-wrap: wrap;
-//   gap: 20px;
-//   align-items: center;
-//   padding: 15px 0;
-// }
-// .filter-item {
-//   display: flex;
-//   gap: 8px;
-//   align-items: center;
-// }
-// .filter-item label {
-//   white-space: nowrap;
-// }
 </style>

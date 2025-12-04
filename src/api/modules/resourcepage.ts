@@ -37,3 +37,8 @@ export function getSankeyApi() {
 export function getMetaListApi(params?: Resource.ReqMetaList) {
   return http.get<Resource.ResMetaList>(`${SYS}/search/getMetaTable`, params);
 }
+
+// 获取 ARG 熵值表格数据列表
+export function getArgEntropyCountListApi(params?: Resource.ReqArgEntropyCountList) {
+  return http.get<Resource.ResArgEntropyCountList>(`${SYS}/search/getArgEntropyCountTable`, params);
+}

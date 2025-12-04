@@ -30,6 +30,14 @@
               font-size: 14px;
               font-weight: bold;
             }
+            .local-icon {
+              width: 20px; // 根据需要调整
+              height: 20px;
+              margin-right: 8px; // 与文字间距
+            }
+            .font-icon {
+              margin-right: 8px;
+            }
           }
         }
         .active-card {

@@ -12,7 +12,9 @@
       <el-tabs v-model="activeTab" type="card" class="centered-tabs">
         <el-tab-pane label="Glossary" name="glossary">
           <div class="glossary-content">
-            <h2 style="margin-bottom: 20px; color: #d32f2f">Salmonella Visualization Web Page Terminology Interpretation</h2>
+            <h2 style="margin-bottom: 20px; color: #d32f2f">
+              <i>Salmonella</i> Visualization Web Page Terminology Interpretation
+            </h2>
             <el-table :data="terminologyList" border style="width: 80%">
               <el-table-column prop="noun" label="NOUN" width="300">
                 <template #default="{ row }">

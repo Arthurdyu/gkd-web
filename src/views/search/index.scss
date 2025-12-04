@@ -1,3 +1,10 @@
+.search-contianer {
+  padding: 20px;
+  .table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+  }
+}
 .homepage-contianer {
   width: 100%;
   background: #ffffff;

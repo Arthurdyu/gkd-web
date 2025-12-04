@@ -1,3 +1,5 @@
+import { formatNumber } from "@/utils/format";
+
 export interface MapInitialOptions {
   name: string;
   map: string;
@@ -386,7 +388,8 @@ export const mapOption = {
     formatter: function (val) {
       console.log(val.data);
       if (val.data == null) return "";
-      return val.data.text + val.data.name + ": " + val.data.value;
+      return val.data.text + val.data.name + ": " + formatNumber(val.data.value);
+      //
     }
   },
   // 视觉映射组件,地图的图例颜色映射

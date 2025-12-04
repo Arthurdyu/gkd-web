@@ -24,7 +24,6 @@
         </div>
       </div>
     </div>
-    <div class="part-three-container">Visualization of Salmonella database</div>
   </div>
 </template>
 
@@ -33,7 +32,20 @@
 import { getSunburstApi } from "@/api/modules/homepage";
 import Echarts from "@/components/ECharts/index.vue";
 import { onMounted, ref } from "vue";
+
+//import SerotypePieChart from "@/components/ECharts/serovarPie.vue";
 const summerChatOption = ref<any>({});
+
+// 1. 选择场景一：大肠杆菌血清型数据
+// const eColiSerotypeData = [
+//   { name: "O157:H7", value: 35 },
+//   { name: "O121", value: 22 },
+//   { name: "O26", value: 18 },
+//   { name: "O111", value: 15 },
+//   { name: "O45", value: 8 },
+//   { name: "其他血清型", value: 2 }
+// ];
+
 const getSunburst = async () => {
   try {
     const params = {
