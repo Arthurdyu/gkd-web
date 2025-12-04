@@ -4,16 +4,32 @@
   align-items: center;
   font-family: Arial, sans-serif;
   .header {
+    position: relative;
     width: 100%;
-    height: 150px;
+    height: 160px;
     margin-bottom: 30px;
     text-align: center;
     background-color: #6a1a1a;
+    .header-image {
+      position: absolute;
+      top: 60%;
+      left: 80%; // 将元素左上角定位到父元素高度的 50%、宽度的 80% 位置
+      flex-shrink: 0;
+      width: 123px;
+      height: 159px;
+      aspect-ratio: 41/53;
+      transform: translate(
+        -50%,
+        -50%
+      ); // 通过向左和向上各移动自身宽高的 50%，使元素的中心点与top:50%; left:80%;定义的点对齐，实现元素在指定位置的精准居中放置。
+    }
     h1 {
+      position: relative;
       font-size: 2rem;
       color: #ffffff;
     }
     p {
+      position: relative;
       font-style: italic;
       color: #ffffff;
     }

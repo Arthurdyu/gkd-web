@@ -24,7 +24,6 @@ import { DEFAULT_PRIMARY } from "@/config";
 import { codeTurnInfo, nameToCode, MapInitialOptions, mapOption } from "./helper";
 import { ElMessage } from "element-plus";
 import { mapJson } from "@/api/modules/homepage";
-//import { codeTurnInfo, nameToCode } from "";
 
 const loadingOption = {
   text: "加载中", // 加载提示文本

@@ -3,6 +3,7 @@
     <!-- 帮助中心标题 -->
     <div class="header">
       <h1>Help Center</h1>
+      <img src="@/assets/images/question.png" class="header-image" width="" />
       <p>"You can find answers to common questions in the Help Center."</p>
     </div>
 
