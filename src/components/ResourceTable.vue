@@ -97,7 +97,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits, ref, computed, watch, reactive, PropType } from "vue";
+import { ref, computed, watch, reactive, PropType } from "vue";
 import { onMounted } from "vue";
 import { ElMessage } from "element-plus";
 
@@ -360,13 +360,9 @@ function exportDataToCSV(data: any[], filename: string) {
 }
 
 // 新增：用于分页的计算属性
-const paginationCurrentPage = computed({
-  get: () => props.pagination?.currentPage || 1
-});
+const paginationCurrentPage = computed(() => props.pagination?.currentPage || 1);
 
-const paginationPageSize = computed({
-  get: () => props.pagination?.pageSize || 10
-});
+const paginationPageSize = computed(() => props.pagination?.pageSize || 10);
 
 const handleSizeChange = (val: number) => {
   if (props.pagination?.onSizeChange) {
