@@ -446,8 +446,8 @@ const handleCurrentChange = (val: number) => {
   padding: 2px 8px;
 }
 :deep(.column-search .el-input__inner) {
-  height: 24px;
-  font-size: 12px;
+  height: 28px;
+  font-size: 14px;
   line-height: 24px;
 }
 

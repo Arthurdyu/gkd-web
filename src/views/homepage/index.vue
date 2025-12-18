@@ -158,17 +158,43 @@ const getSunburst = async () => {
         ]
       }
     ];
+
     summerChatOption.value = {
+      tooltip: {
+        trigger: "item",
+        // 1. 自定义方框样式：背景白、灰色边框、圆角、内边距
+        backgroundColor: "#ffffff", // 背景色（白色方框）
+        borderColor: "#e5e7eb", // 边框色
+        borderWidth: 1, // 边框宽度
+        borderRadius: 4, // 圆角（可选，不想圆角可设为 0）
+        padding: 12, // 内边距（让内容不挤）
+        textStyle: { color: "#333333", fontSize: 14 }, // 文本样式
+        // 2. 自定义内容：label + 数值（支持换行）
+        formatter: function (params) {
+          // params.name 是 item 的 label（如 Human、Clinical）
+          // params.value 是 item 的数值
+          // params.percent 是占比（可选，不需要可删除）
+          return `
+            <div>
+              <div style="margin-bottom: 4px;">${params.name}</div>
+              <div>Sequence: ${(params.value || 0).toLocaleString("en-US")}</div>
+              ${params.percent ? `<div>Percent: ${(params.percent * 100).toFixed(1)}%</div>` : ""}
+            </div>
+          `;
+        },
+        // 可选：调整 tooltip 位置偏移（避免遮挡图表）
+        position: function (point) {
+          return [point[0] + 10, point[1] + 10];
+        }
+      },
       series: {
         type: "sunburst",
-        emphasis: {
-          focus: "ancestor"
-        },
+        name: "OneHealth 分类", //  tooltip 标题（对应 formatter 中的 {a}）
+        emphasis: { focus: "ancestor" },
         data: newList,
         radius: [0, "90%"],
-        label: {
-          rotate: "radial"
-        }
+        label: { rotate: "radial", show: true, formatter: "{b}" }
+        // 注意：series 里的 tooltip 可以删掉，统一用外层 tooltip 配置
       }
     };
     console.log(res);
