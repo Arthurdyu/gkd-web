@@ -29,8 +29,8 @@
           :default-col-min-width="60"
           :default-col-max-width="300"
           :pagination="allPagination"
-          :height="460"
-          :table-style="{ minWidth: '2000px' }"
+          :height="500"
+          :table-style="{ minWidth: '2500px' }"
           :default-sortable="true"
           :fetch-all-data-function="fetchAllArgAllEntropyData"
           :selected-all-pages-data="allAllEntropySelectedData"
@@ -73,7 +73,7 @@
           :default-col-min-width="60"
           :default-col-max-width="300"
           :pagination="countryPagination"
-          :height="450"
+          :height="500"
           :table-style="{ minWidth: '1000px' }"
           :default-sortable="true"
           :fetch-all-data-function="fetchAllArgCountryEntropyData"
@@ -95,7 +95,7 @@
           :default-col-min-width="60"
           :default-col-max-width="300"
           :pagination="hostPagination"
-          :height="450"
+          :height="500"
           :table-style="{ minWidth: '1000px' }"
           :default-sortable="true"
           :fetch-all-data-function="fetchAllArgHostEntropyData"
@@ -131,16 +131,16 @@ const argAllEntropyColumns = ref([
   { type: "selection" }, // 添加选择列
   { type: "index", label: "index", width: 65 },
   { prop: "arg", label: "ARG", minWidth: 100, searchable: true },
-  { prop: "serovarEntropy", label: "Serovar Entropy", minWidth: 100, sortable: true, searchable: false },
-  { prop: "serovarNumber", label: "Serovar Number", minWidth: 100, sortable: true, searchable: false },
-  { prop: "totalSerovarNumber", label: "Total Serovar Number", minWidth: 100, sortable: false, searchable: false },
-  { prop: "serovarPrevalence", label: "Serovar Prevalence(%)", minWidth: 130, sortable: true, searchable: false },
-  { prop: "countryEntropy", label: "Country Entropy", minWidth: 100, sortable: true, searchable: false },
-  { prop: "countryNumber", label: "Country Number", minWidth: 100, sortable: true, searchable: false },
-  { prop: "totalCountryNumber", label: "Total Country Number", minWidth: 100, sortable: false, searchable: false },
-  { prop: "countryPrevalence", label: "Country Prevalence(%)", minWidth: 130, sortable: true, searchable: false },
-  { prop: "nicheEntropy", label: "Niche Entropy", minWidth: 100, sortable: true, searchable: false },
-  { prop: "nicheNumber", label: "Niche Number", minWidth: 100, sortable: true, searchable: false }
+  { prop: "serovarEntropy", label: "Serovar Entropy", minWidth: 140, sortable: true, searchable: false },
+  { prop: "serovarNumber", label: "Serovar Number", minWidth: 140, sortable: true, searchable: false },
+  { prop: "totalSerovarNumber", label: "Total Serovar Number", minWidth: 150, sortable: false, searchable: false },
+  { prop: "serovarPrevalence", label: "Serovar Prevalence(%)", minWidth: 180, sortable: true, searchable: false },
+  { prop: "countryEntropy", label: "Country Entropy", minWidth: 140, sortable: true, searchable: false },
+  { prop: "countryNumber", label: "Country Number", minWidth: 140, sortable: true, searchable: false },
+  { prop: "totalCountryNumber", label: "Total Country Number", minWidth: 150, sortable: false, searchable: false },
+  { prop: "countryPrevalence", label: "Country Prevalence(%)", minWidth: 180, sortable: true, searchable: false },
+  { prop: "nicheEntropy", label: "Niche(Host) Entropy", minWidth: 160, sortable: true, searchable: false },
+  { prop: "nicheNumber", label: "Niche(Host) Number", minWidth: 160, sortable: true, searchable: false }
 ]);
 
 // 搜索过滤器

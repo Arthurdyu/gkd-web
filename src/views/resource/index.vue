@@ -127,7 +127,7 @@
     </div>
 
     <!-- 表格,显示基因组的详细信息-->
-    <div class="resource-table-metadata-container" style="margin: 20px">
+    <div class="resource-table-metadata-container" style="margin: 20px 0">
       <div class="table-wrapper">
         <ResourceTable
           :table-data="metaTableData"
@@ -136,7 +136,7 @@
           :default-col-min-width="60"
           :default-col-max-width="300"
           :pagination="pagination"
-          :height="600"
+          :height="500"
           :table-style="{ minWidth: '100px' }"
           :default-sortable="true"
           :fetch-all-data-function="fetchAllMetaListData"
@@ -298,7 +298,7 @@ const resetMapFilters = () => {
 };
 
 // 添加一个响应式变量来跟踪组件是否已挂载
-const isComponentMounted = ref(true);
+//const isComponentMounted = ref(true);
 
 // 获取宿主选项
 const getHostOptions = async () => {
@@ -354,70 +354,70 @@ const getSerovarOptions = async () => {
 
 // 获取OneHealth选项
 const getOneHealthOptions = async () => {
-  try {
-    // 构造参数获取所有数据，设置一个更大的limit值
-    const params: any = {
-      curPage: 1,
-      limit: 500000 // 增加limit以确保能获取所有46万条数据
-    };
+  // try {
+  //   // 构造参数获取所有数据，设置一个更大的limit值
+  //   const params: any = {
+  //     curPage: 1,
+  //     limit: 500000 // 增加limit以确保能获取所有46万条数据
+  //   };
 
-    console.log("开始获取OneHealth选项数据，参数:", params);
-    // 正确传递参数，将cancel配置作为第三个参数传递
-    //const res: any = await getMetaListApi(params);
-    const res: any = await getMetaListApi({ ...params, _t: Date.now() + "_oneHealth" }); // getHostOptions
+  //   console.log("开始获取OneHealth选项数据，参数:", params);
+  //   // 正确传递参数，将cancel配置作为第三个参数传递
+  //   //const res: any = await getMetaListApi(params);
+  //   const res: any = await getMetaListApi({ ...params, _t: Date.now() + "_oneHealth" }); // getHostOptions
 
-    console.log("OneHealth选项API调用完成，响应数据:", res);
+  //   console.log("OneHealth选项API调用完成，响应数据:", res);
 
-    // 检查组件是否仍然挂载
-    if (!isComponentMounted.value) {
-      console.log("组件已卸载，停止处理OneHealth选项数据");
-      return; // 组件已卸载，不继续处理
-    }
+  //   // 检查组件是否仍然挂载
+  //   if (!isComponentMounted.value) {
+  //     console.log("组件已卸载，停止处理OneHealth选项数据");
+  //     return; // 组件已卸载，不继续处理
+  //   }
 
-    // 处理OneHealth统计数据
-    if (res && res.data && res.data.list) {
-      // 获取所有OneHealth值
-      const oneHealths = new Set<string>();
+  //   // 处理OneHealth统计数据
+  //   if (res && res.data && res.data.list) {
+  //     // 获取所有OneHealth值
+  //     const oneHealths = new Set<string>();
 
-      res.data.list.forEach((item: any) => {
-        const oneHealth = item.oneHealth;
-        if (oneHealth) {
-          oneHealths.add(oneHealth);
-        }
-      });
+  //     res.data.list.forEach((item: any) => {
+  //       const oneHealth = item.oneHealth;
+  //       if (oneHealth) {
+  //         oneHealths.add(oneHealth);
+  //       }
+  //     });
 
-      // 更新OneHealth选项
-      oneHealthOptions.value = Array.from(oneHealths).map(oneHealth => ({
-        label: oneHealth,
-        value: oneHealth
-      }));
-      console.log("OneHealth选项数据处理完成，oneHealthOptions:", oneHealthOptions.value);
-    } else {
-      console.warn("OneHealth选项数据格式不正确或为空:", res);
-    }
-  } catch (error: any) {
-    // 检查组件是否仍然挂载
-    if (!isComponentMounted.value) {
-      console.log("组件已卸载，忽略OneHealth选项获取错误");
-      return;
-    }
+  //     // 更新OneHealth选项
+  //     oneHealthOptions.value = Array.from(oneHealths).map(oneHealth => ({
+  //       label: oneHealth,
+  //       value: oneHealth
+  //     }));
+  //     console.log("OneHealth选项数据处理完成，oneHealthOptions:", oneHealthOptions.value);
+  //   } else {
+  //     console.warn("OneHealth选项数据格式不正确或为空:", res);
+  //   }
+  // } catch (error: any) {
+  //   // 检查组件是否仍然挂载
+  //   if (!isComponentMounted.value) {
+  //     console.log("组件已卸载，忽略OneHealth选项获取错误");
+  //     return;
+  //   }
 
-    // 检查是否是请求取消错误
-    if (error.name === "CanceledError" || error.code === "ERR_CANCELED") {
-      console.log("获取OneHealth选项请求被取消:", error.message);
-      return; // 请求被取消，正常现象，不需要处理
-    }
+  //   // 检查是否是请求取消错误
+  //   if (error.name === "CanceledError" || error.code === "ERR_CANCELED") {
+  //     console.log("获取OneHealth选项请求被取消:", error.message);
+  //     return; // 请求被取消，正常现象，不需要处理
+  //   }
 
-    console.error("获取OneHealth选项失败:", error);
-    // 使用模拟数据作为备选
-    oneHealthOptions.value = [
-      { label: "Human", value: "Human" },
-      { label: "Animal", value: "Animal" },
-      { label: "Environment", value: "Environment" },
-      { label: "Food", value: "Food" }
-    ];
-    console.log("使用模拟数据作为OneHealth选项:", oneHealthOptions.value);
-  }
+  //   console.error("获取OneHealth选项失败:", error);
+  // 使用模拟数据作为备选
+  oneHealthOptions.value = [
+    { label: "Human", value: "Human" },
+    { label: "Animal", value: "Animal" },
+    { label: "Environment", value: "Environment" },
+    { label: "Food", value: "Food" }
+  ];
+  console.log("使用模拟数据作为OneHealth选项:", oneHealthOptions.value);
+  //}
 };
 
 //每年测序的基因组数据
@@ -434,8 +434,14 @@ const getSequenceYearData = async () => {
     });
     sequenceYearOption.value = {
       title: {
-        text: t("resource.sequenceYearperYear_title"),
-        left: "center"
+        text: t("resource.sequencePerYear_title"),
+        left: "center",
+        top: "5%",
+        textStyle: {
+          fontSize: 14,
+          fontWeight: "bold",
+          color: "#333"
+        }
       },
       tooltip: {
         // 鼠标放上去的数据提示框
@@ -444,14 +450,45 @@ const getSequenceYearData = async () => {
           type: "shadow"
         }
       },
+      // toolbox: {
+      //   feature: {
+      //     dataZoom: {
+      //       yAxisIndex: false
+      //     },
+      //     saveAsImage: {
+      //       pixelRatio: 2
+      //     }
+      //   }
+      // },
+      grid: {
+        left: "10%",
+        right: "5%",
+        top: "20%",
+        bottom: 50,
+        containLabel: true
+      },
+      dataZoom: [
+        {
+          type: "inside"
+        },
+        {
+          type: "slider"
+        }
+      ],
       xAxis: {
         type: "category",
         data: years,
-        minInterval: 10
+        silent: false,
+        splitLine: {
+          show: false
+        },
+        splitArea: {
+          show: false
+        }
       },
       yAxis: {
         type: "value",
-        name: t("resource.sequenceYearperYear"),
+        name: t("resource.sequencePerYear_yaxis"),
         nameLocation: "middle",
         nameGap: 50,
         nameRotate: 90,
@@ -465,21 +502,22 @@ const getSequenceYearData = async () => {
             return value.toString();
           }
         },
+        splitArea: {
+          show: false
+        },
         logBase: 10
       },
       series: [
         {
+          type: "bar",
           data: values,
-          type: "bar"
+          large: true,
+          largeThreshold: 100,
+          progressive: 2000,
+          progressiveThreshold: 3000,
+          animation: false
         }
-      ],
-      grid: {
-        left: "10%",
-        right: "5%",
-        top: "20%",
-        bottom: "5%",
-        containLabel: true
-      }
+      ]
     };
   } catch (error) {
     console.error("获取每年测序量数据失败:", error);
@@ -524,9 +562,15 @@ const getSerovarPieData = async () => {
     });
     serovarPieOption.value = {
       title: {
-        text: t("resource.serovar"),
+        text: t("resource.serovarPie_title"),
         //text: "Serovar Pie Chart",
-        left: "center"
+        left: "center",
+        top: "5%",
+        textStyle: {
+          fontSize: 14,
+          fontWeight: "bold",
+          color: "#333"
+        }
       },
       tooltip: {
         trigger: "item"
@@ -593,9 +637,15 @@ const getSTPieData = async () => {
     });
     stPieOption.value = {
       title: {
-        text: t("resource.st"),
+        text: t("resource.stPie_title"),
         //text: "Serovar Pie Chart",
-        left: "center"
+        left: "center",
+        top: "5%",
+        textStyle: {
+          fontSize: 14,
+          fontWeight: "bold",
+          color: "#333"
+        }
       },
       tooltip: {
         trigger: "item"
@@ -675,6 +725,24 @@ const getSankeyData = async () => {
           nodeAlign: "justify"
         }
       ],
+      title: {
+        text: t("resource.serovarSTSankey_title"),
+        //text: "Sankey Diagram",
+        left: "center",
+        top: "0",
+        textStyle: {
+          fontSize: 14,
+          fontWeight: "bold",
+          color: "#333"
+        }
+      },
+      grid: {
+        left: "10%",
+        right: "10%",
+        top: "20%",
+        bottom: "10%",
+        containLabel: true
+      },
       tooltip: {
         trigger: "item",
         triggerOn: "mousemove"
@@ -875,7 +943,7 @@ const fetchAllMetaListData = async (extraParams = {}) => {
   try {
     const params: any = {
       curPage: 1,
-      limit: 10000, // 设置一个足够大的数字以获取所有数据
+      limit: 100000, // 设置一个足够大的数字以获取所有数据
       sidx: metaSortParams.sidx,
       order: metaSortParams.order,
       ...extraParams
@@ -972,6 +1040,9 @@ const handleMetaSearch = (prop: string, value?: string) => {
 onMounted(() => {
   console.log("Resource组件已挂载，开始加载数据");
   //调用所有必要的数据加载方法
+  getSankeyData();
+  getSTPieData();
+
   getWorldmapData();
   getMetaList();
   getSequenceYearData();
@@ -979,8 +1050,6 @@ onMounted(() => {
   getHostOptions();
   getSerovarOptions(); // 添加血清型选项获取
   getOneHealthOptions(); // 添加OneHealth选项获取
-  getSTPieData();
-  getSankeyData();
 
   console.log("Resource组件数据加载方法已调用");
 });

@@ -24,18 +24,18 @@ export function getSerovarApi(params?: any) {
 }
 
 //ST型数据
-export function getSTApi() {
-  return http.get<Resource.ResST>(`${SYS}/resource/getSTPiechart`);
+export function getSTApi(params?: any) {
+  return http.get<Resource.ResST>(`${SYS}/resource/getSTPiechart`, params);
 }
 
 // 获取桑基图数据
-export function getSankeyApi() {
-  return http.get<Resource.ResSankey>(`${SYS}/resource/getSerovarSTCorrespondence`);
+export function getSankeyApi(params?: any) {
+  return http.get<Resource.ResSankey>(`${SYS}/resource/getSerovarSTCorrespondence`, params);
 }
 
 // 获取 Meta 表格数据列表
 export function getMetaListApi(params?: Resource.ReqMetaList) {
-  return http.get<Resource.ResMetaList>(`${SYS}/search/getMetaTable`, params);
+  return http.get<Resource.ResMetaList>(`${SYS}/resource/getMetaTable`, params);
 }
 
 // 获取 ARG 熵值表格数据列表
