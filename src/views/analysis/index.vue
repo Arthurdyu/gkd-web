@@ -37,10 +37,10 @@ interface NavItem {
 
 //  导航数据
 const navItems = ref<NavItem[]>([
-  { label: "Basic Chart", icon: "src/assets/images/icon/BasicChart.svg" },
-  { label: "Upload Datasets", icon: "src/assets/images/icon/Upload.svg" },
-  { label: "GenoTrace", icon: "src/assets/images/icon/GenoTrace.svg" },
-  { label: "Risk Analysis", icon: "src/assets/images/icon/RiskAnalysis.svg" }
+  { label: "Basic Chart", icon: new URL("@/assets/images/icon/BasicChart.svg", import.meta.url).href },
+  { label: "Upload Datasets", icon: new URL("@/assets/images/icon/Upload.svg", import.meta.url).href },
+  { label: "GenoTrace", icon: new URL("@/assets/images/icon/GenoTrace.svg", import.meta.url).href },
+  { label: "Risk Analysis", icon: new URL("@/assets/images/icon/RiskAnalysis.svg", import.meta.url).href }
 ]);
 
 //  当前激活索引

@@ -92,12 +92,12 @@ import { ref } from "vue";
 import VennChart from "@/components/EchartVeen.vue";
 import SerotypePieChart from "@/components/ECharts/serovarPie.vue";
 import FilterSelect from "@/components/FilterSelect.vue";
-
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
 interface Option {
   label: string;
   value: string | number;
 }
-
 // 1. 选择场景一：大肠杆菌血清型数据
 const eColiSerotypeData = [
   { name: "O157:H7", value: 35 },
@@ -109,17 +109,37 @@ const eColiSerotypeData = [
 ];
 
 const chartCards = [
-  { name: "Venn Diagram", type: "venn", component: VennChart, thumbnail: "src/assets/images/icon/venn.png" },
+  {
+    name: "Venn Diagram",
+    type: "venn",
+    component: VennChart,
+    thumbnail: new URL("@/assets/images/icon/venn.png", import.meta.url).href
+  },
   {
     name: "Bar Chart",
     type: "serovarPie",
     component: SerotypePieChart,
-    thumbnail: "src/assets/images/icon/bar.png",
+    thumbnail: new URL("@/assets/images/icon/bar.png", import.meta.url).href,
     props: { data: eColiSerotypeData }
   },
-  { name: "Line Chart", type: "map", component: SerotypePieChart, thumbnail: "src/assets/images/icon/LineChart.png" },
-  { name: "Linear Regression", type: "map", component: SerotypePieChart, thumbnail: "src/assets/images/icon/Regression.png" },
-  { name: "Correlation Matrix", type: "map", component: SerotypePieChart, thumbnail: "src/assets/images/icon/Correlation.png" }
+  {
+    name: "Line Chart",
+    type: "map",
+    component: SerotypePieChart,
+    thumbnail: new URL("@/assets/images/icon/LineChart.png", import.meta.url).href
+  },
+  {
+    name: "Linear Regression",
+    type: "map",
+    component: SerotypePieChart,
+    thumbnail: new URL("@/assets/images/icon/Regression.png", import.meta.url).href
+  },
+  {
+    name: "Correlation Matrix",
+    type: "map",
+    component: SerotypePieChart,
+    thumbnail: new URL("@/assets/images/icon/Correlation.png", import.meta.url).href
+  }
 ];
 
 const activeIndex = ref(0);
@@ -129,7 +149,7 @@ const selectCard = (idx: number) => {
 
 // 定义选项数据
 const countryOptions = ref<Option[]>([
-  { label: "China", value: "CN" },
+  { label: t("resource.sequenceYearperYear_title"), value: "CN" },
   { label: "USA", value: "US" },
   { label: "UK", value: "UK" }
 ]);
@@ -176,9 +196,7 @@ const compareGroups = () => {
 .chart-card-list {
   display: flex;
   align-items: center;
-  height: 220px;
   padding: 20px 0;
-  overflow-x: auto;
   background: #f7f7f7;
 }
 .chart-card {
