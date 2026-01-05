@@ -27,8 +27,6 @@ import { ref, computed } from "vue";
 //  导入同目录下的页面组件
 import BasicDraw from "./BasicDraw.vue";
 import UploadDatasets from "./UploadDatasets.vue";
-import GenoTrace from "./GenoTrace.vue";
-import RiskAnalysis from "./RiskAnalysis.vue";
 
 interface NavItem {
   icon: string;
@@ -38,9 +36,7 @@ interface NavItem {
 //  导航数据
 const navItems = ref<NavItem[]>([
   { label: "Basic Chart", icon: new URL("@/assets/images/icon/BasicChart.svg", import.meta.url).href },
-  { label: "Upload Datasets", icon: new URL("@/assets/images/icon/Upload.svg", import.meta.url).href },
-  { label: "GenoTrace", icon: new URL("@/assets/images/icon/GenoTrace.svg", import.meta.url).href },
-  { label: "Risk Analysis", icon: new URL("@/assets/images/icon/RiskAnalysis.svg", import.meta.url).href }
+  { label: "Upload & GenoTrace", icon: new URL("@/assets/images/icon/Upload.svg", import.meta.url).href }
 ]);
 
 //  当前激活索引
@@ -52,7 +48,7 @@ const selectItem = (index: number) => {
 };
 
 //  动态组件列表
-const components = [BasicDraw, UploadDatasets, GenoTrace, RiskAnalysis] as const;
+const components = [BasicDraw, UploadDatasets] as const;
 
 //  计算当前应显示的组件
 const currentComponent = computed(() => {

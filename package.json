@@ -35,12 +35,13 @@
     "md5": "^2.3.0",
     "mitt": "^3.0.1",
     "nprogress": "^0.2.0",
+    "phylotree": "^2.2.1",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
     "qs": "^6.12.3",
-    "vue-i18n": "^9.10.1",
     "vue": "^3.4.31",
     "vue-demi": "0.14.6",
+    "vue-i18n": "^9.10.1",
     "vue-router": "^4.4.0"
   },
   "devDependencies": {

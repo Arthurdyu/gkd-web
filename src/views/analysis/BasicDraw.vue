@@ -92,8 +92,6 @@ import { ref } from "vue";
 import VennChart from "@/components/EchartVeen.vue";
 import SerotypePieChart from "@/components/ECharts/serovarPie.vue";
 import FilterSelect from "@/components/FilterSelect.vue";
-import { useI18n } from "vue-i18n";
-const { t } = useI18n();
 interface Option {
   label: string;
   value: string | number;
@@ -149,7 +147,7 @@ const selectCard = (idx: number) => {
 
 // 定义选项数据
 const countryOptions = ref<Option[]>([
-  { label: t("resource.sequenceYearperYear_title"), value: "CN" },
+  { label: "China", value: "CN" },
   { label: "USA", value: "US" },
   { label: "UK", value: "UK" }
 ]);
