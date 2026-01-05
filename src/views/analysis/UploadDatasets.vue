@@ -1,9 +1,9 @@
 <template>
-  <div class="upload-container">
+  <div class="upload-container" @mouseleave="hide">
     <el-button @click="initializeTree" type="primary"> reset</el-button>
     <div ref="treeData" id="tree" style="width: 1200px; height: 1000px"></div>
     <div
-      v-if="showInfoPanel"
+      v-show="showInfoPanel"
       class="node-info-panel"
       :style="{ left: positionXY.left + 'px', top: positionXY.top + 'px' }"
       @click.stop
@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, reactive } from "vue";
+import { ref, onMounted, reactive, onUnmounted } from "vue";
 import "phylotree/dist/phylotree.css";
 import { phylotree as Phylotree } from "phylotree";
 const treeData = ref<any>(null);
@@ -44,9 +44,15 @@ const positionXY = reactive({
   top: 200
 });
 const showInfoPanel = ref(false);
+const hide = () => {
+  if (showInfoPanel.value) {
+    showInfoPanel.value = false;
+  }
+};
 
 const handleNodeClick = (node, event) => {
-  if (node?.data?.name && selectedNode.value?.data?.name === node?.data?.name) return;
+  console.log("点击节点:", node);
+  if (node?.data?.name && selectedNode.value?.data?.name === node?.data?.name && showInfoPanel.value === true) return;
   selectedNode.value = node;
   showInfoPanel.value = true;
   const rect = treeData.value.getBoundingClientRect();
@@ -55,6 +61,9 @@ const handleNodeClick = (node, event) => {
 };
 onMounted(() => {
   initializeTree();
+});
+onUnmounted(() => {
+  hide();
 });
 const list = new Set(["YP_0038120", "ZP_0509506", "ZP_1077782", "YP_433139"]);
 function colorNodesByName(element, data) {
