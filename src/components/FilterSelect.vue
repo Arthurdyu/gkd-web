@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, defineProps, computed } from "vue";
+import { ref, watch, computed } from "vue";
 import type { CheckboxValueType } from "element-plus"; // 新增导入
 
 // 定义选项的类型
